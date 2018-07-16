@@ -28,10 +28,13 @@ class custom_graphics_item(GLGraphicsItem):
         self.projection = []
         self._shader = shader(self.filename)
 
-    def background_render(self,size, ratio):
+    def background_render(self,size, ratio, rect = (0,0,0,0)):
         self.width = int(size.x()*ratio)#int(896/322*1449)
         self.height = int(size.y()*ratio)
-        #rect.setRect(rect.x()*ratio,rect.y()*ratio,rect.width()*ratio,rect.height()*ratio)
+        if rect[3] != 0:
+            rect = (rect[0]*ratio,rect[1]*ratio,rect[2]*ratio,rect[3]*ratio)
+        else:
+            rect = (rect[0]*ratio,rect[1]*ratio,self.width,self.height)
         #self.roi = rect
         self.backgroundRender = True
         model = QtGui.QMatrix4x4()
@@ -70,8 +73,8 @@ class custom_graphics_item(GLGraphicsItem):
             self.paint()
         finally:
             glReadBuffer(GL_COLOR_ATTACHMENT0)
-            buf = glReadPixels(0,0,self.width, self.height, GL_RGBA, GL_UNSIGNED_BYTE)
-            image = Image.frombytes(mode="RGBA", size=(self.width, self.height), data=buf)
+            buf = glReadPixels(rect[0],rect[1],rect[2], rect[3], GL_RGBA, GL_UNSIGNED_BYTE)
+            image = Image.frombytes(mode="RGBA", size=(int(rect[2]), int(rect[3])), data=buf)
             self.image = image.transpose(Image.FLIP_LEFT_RIGHT)
             glBindFramebuffer(GL_FRAMEBUFFER, 0)
             renderbuffer.delete()
@@ -154,6 +157,7 @@ class alpha_complex(custom_graphics_item):
             glEnable(enum)
         # Blending to get a smooth point cloud
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)#todo:overlapp via blend
+        glLineWidth(float(self.size))
         if self.updateData:
             self._update()
             print("Updating Alpha data")

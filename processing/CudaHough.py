@@ -109,7 +109,11 @@ __global__ void create_accum(Matrix *accum, Matrix *r_table, Matrixf *gradient_i
 
 
 class hough_transform(object):
-    def __init__(self):
+    """
+    Perform a gradient weighted General Hough Transform on an image given a template and a set of rotation angles
+    """
+    def __init__(self,):
+        self.weighted = True
         self.r_table = []
         self.gradient_image = []
         self.create_accum = mod.get_function("create_accum")
@@ -117,9 +121,14 @@ class hough_transform(object):
     
     def set_template(self, templ):
         templ = self.scale(templ, 0.5, 0.5)
+        #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_templ.jpg",templ)
 
         canny = self.create_template(templ)
+        #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_canny.jpg",canny)
+
         gradient = self.create_gradient(canny)
+        #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_gradient.jpg",gradient.astype("uint8"))
+
         cv2.imshow("temp", gradient.astype("uint8"))
         self.r_table_zero = self.create_R_table(gradient, canny)
         #self.r_table = self.rot_R_table(np.pi*1/18)
@@ -196,17 +205,22 @@ class hough_transform(object):
     def set_image(self, image):
         image = self.scale(image, 0.5, 0.5)
         im = cv2.blur(image, (5,5))
+        #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_image.jpg",image)
 
         self.image_canny = cv2.Canny(im, 130,180)
+        #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_imcanny.jpg",self.image_canny)
+
         cv2.imshow("canny", self.image_canny.astype("uint8"))
         #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\SIM_edge_canny.jpg",im.astype("uint8"))
         self.gradient_image = self.create_gradient(self.image_canny)
+        #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_imgrad.jpg",self.gradient_image.astype("uint8"))
 
         cv2.imshow("grad", self.gradient_image.astype("uint8"))
         #cv2.waitKey(0)
 
     def get_weighted_maximas(self, accum, ratio=0.8):
         #done: speed up to slow
+        #accum = cv2.blur(accum, (2,2))
         maxindex = np.unravel_index(accum.argmax(), accum.shape)
         #candidates = []
         result = []
@@ -237,7 +251,7 @@ class hough_transform(object):
 
         #htod matrices data keep variables to prohibit python garbage cleaning
         #R = Matrix(self.r_table.astype(np.int32), r_table_ptr)# fucking python garbage collector srsly
-        A = Matrix(accum.astype(np.int32), accum_ptr)
+        #A = Matrix(accum.astype(np.int32), accum_ptr)
         G = Matrix(self.gradient_image.astype(np.float32), grad_ptr)
         dev = drv.Device(0)
         attr = dev.get_attributes()
@@ -254,17 +268,20 @@ class hough_transform(object):
          # int(self.r_table.shape[1]/block_size[2])
         #todo: size something with modulo
         #done: iterate different angles 0:16 degree
-        for i in range(5):
+        for i in range(15):
             #done: additive rundungsfehler lösung: rotate r_zero
-            angle = i+6
+            angle = i
             self.r_table = self.rot_R_table(np.pi*(angle)/180)
-
 
             #print(self.r_table.shape[1])
             #t2 = time.time()
 
             A = Matrix(accum.astype(np.int32), accum_ptr)
-            R = Matrix(self.r_table.astype(np.int32), r_table_ptr)
+            try:
+                R = Matrix(self.r_table.astype(np.int32), r_table_ptr)
+            except:
+                print("Probably r-table empty better check")
+                break   
             #print("rotating:", time.time()-t2)
 
             grid = int(self.gradient_image.shape[0]/block_size[0])+0,int(self.gradient_image.shape[1]/block_size[1])+0,int(self.r_table.shape[1])
@@ -272,12 +289,16 @@ class hough_transform(object):
             t1 = time.time()
             acc = A.get()
             print("one run needs:", time.time()-t1)
-
-            maxi = self.get_weighted_maximas(acc, ratio=0.8)
-            x=np.unravel_index(maxi[...,4].argmax(),maxi.shape[0])
-            if maxi[x,4]>res[1][4]:
-                res = (angle,maxi[x])
-            print("Rotation:"+ str(angle) +"° \n maximal weighted find"+ str(maxi[x]))
+            #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_accum.jpg",acc.astype("uint8"))
+            if self.weighted:
+                weighted_acc = self.get_weighted_maximas(acc, ratio=0.8)
+            else:
+                #todo: fix
+                weighted_acc = acc
+            x=np.unravel_index(weighted_acc[...,4].argmax(),weighted_acc.shape[0])
+            if weighted_acc[x,4]>res[1][4]:
+                res = (angle,weighted_acc[x])
+            print("Rotation:"+ str(angle) +"° \n maximal weighted find"+ str(weighted_acc[x]))
         #dtoh result from gpu
         #done: get max return rotation and index
         #drv.stop_profiler()
@@ -287,6 +308,9 @@ class hough_transform(object):
         return res
 
 class Matrix():
+    """
+    Wrapper class for Matrix and Matrixf struct on GPU:
+    """
     mem_size = 16 + np.intp(0).nbytes
     def __init__(self, array, struct_ptr):
         self.data = drv.to_device(array)

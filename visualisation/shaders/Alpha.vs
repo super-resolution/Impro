@@ -18,9 +18,9 @@ void main()
         //if(simplex.x < alpha){//interior
         //    v_color = vec4(1.0,1.0,1.0,0.5);
             if (simplex.y < alpha){
-                    v_color = vec4(0.0,1.0,0.0,0.5);
+                    v_color = vec4(0.0,1.0,0.0,1.0);
                 if (simplex.z > alpha){
-                    v_color = vec4(1.0,1.0,1.0,0.5);
+                    v_color = vec4(1.0,1.0,1.0,1.0);
 
 
                 }

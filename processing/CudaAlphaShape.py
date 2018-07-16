@@ -23,7 +23,10 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-"""Derive 2D alpha complex from scipy.spatial Delaunay
+"""
+=================================================================================
+Derive 2D alpha complex from scipy.spatial Delaunay
+=================================================================================
 
 :Author:
   `Sebastian Reinhard`
@@ -155,12 +158,10 @@ class alpha_complex():
         return self.result
 
     def merge(self):
-        t1 = time.time()
         indices = self.result[...,0:2].astype(np.int32)
         indices_sorted = np.sort(indices,axis=1)
         a,index = np.unique(indices_sorted,return_index=True, axis=0)
         merged = self.result[index]
-        print("merging needs: " + str(time.time()-t1) + " seconds")
         return merged
 
 
@@ -209,6 +210,9 @@ def get_k_simplices(points):
     """
     t1 = time.time()
     tri = Delaunay(points)
+    _tdel = time.time()-t1
+    print("Delaunay " + str(points.shape[0]) + " points in " + str(_tdel) + " seconds")
+    t1 = time.time()
     simplices = tri.simplices.copy()
     neighbors = tri.neighbors.copy()
 
@@ -218,9 +222,13 @@ def get_k_simplices(points):
 
     func = mod.get_function("create_simplices")
     func(alpha_complex_ptr, block=(500,1,1), grid=(int(simplices.shape[0]/500),1,1))
-    print("created alpha complex of " + str(points.shape[0]) + " points in " + str(time.time()-t1) + " seconds")
     alpha_comp.get()#todo: merge duplicated simplices
-    return alpha_comp.merge()
+    _talph = time.time()-t1
+    print("created alpha complex of " + str(points.shape[0]) + " points in " + str(_talph) + " seconds")
+    res = alpha_comp.merge()
+    _tmerg = time.time()-t1
+    print("merging needs: " + str(_tmerg) + " seconds")
+    return res ,_talph, _tdel, _tmerg
 
 if __name__ == "__main__":
     points = (np.random.randn(1000000, 2)*100).astype(np.float32)
@@ -238,6 +246,4 @@ if __name__ == "__main__":
     func(alpha_complex_ptr, block=(500,1,1), grid=(int(simplices.shape[0]/500),1,1))
     a = alpha_comp.get()
     drv.stop_profiler()
-
-
 

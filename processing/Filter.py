@@ -3,7 +3,7 @@ import scipy
 
 
 
-class Filter():
+class filter():
     @staticmethod
     def z_filter(points, min, max):
             print ("ZFilter")

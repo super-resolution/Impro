@@ -44,7 +44,7 @@ import pycuda.driver as drv
 import numpy as np
 from pycuda.compiler import SourceModule
 from scipy.spatial import Delaunay
-#GPU code to construct d = 1 simplices from delaunay triangulation
+#GPU code to construct d = 2 simplices from delaunay triangulation
 mod = SourceModule("""
 typedef struct{
     int* indices;
@@ -104,7 +104,12 @@ __global__ void create_simplices(alpha_complex* complex){
                 }
                 float dist1 = calc_sigma(indices, points);
                 float dist2 = calc_sigma(indices2, points);
-                k_sim[idx*15 +  i*5 + 3] = fminf(sigma,fminf(dist1, dist2));
+                if (fminf(dist1, dist2)<1){
+                    k_sim[idx*15 +  i*5 + 3] = sigma;
+                    }
+                else{
+                     k_sim[idx*15 +  i*5 + 3] = fminf(dist1, dist2);
+                    }   
                 k_sim[idx*15 +  i*5 + 4] = fmaxf(dist1, dist2);
             }
     }

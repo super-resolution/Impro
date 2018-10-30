@@ -144,8 +144,8 @@ class hough_transform(object):
         c = np.cos(angle)
         new_table = []
         phitable = []
-        [phitable.append([]) for i in range(8)]
-        [new_table.append([]) for i in range(8)]
+        [phitable.append([]) for i in range(9)]
+        [new_table.append([]) for i in range(9)]
         for i, islice in enumerate(self.phi_table):
             for j, phi in enumerate(islice):
                 vec = self.r_table_zero[i, j]
@@ -161,7 +161,7 @@ class hough_transform(object):
         for i in table:
             if len(i) > maximum:
                 maximum = len(i)
-        R_Matrix = np.zeros([8,maximum,2])
+        R_Matrix = np.zeros([9,maximum,2])
         for i,j in enumerate(table):
             for h,k in enumerate(j):
                 R_Matrix[i][h] = k
@@ -172,15 +172,16 @@ class hough_transform(object):
         origin = np.asarray((gradient.shape[0]/2, gradient.shape[1]/2))
         Rtable = []
         phitable = []
-        [phitable.append([]) for i in range(8)]
-        [Rtable.append([]) for i in range(8)]
+        [phitable.append([]) for i in range(9)]
+        [Rtable.append([]) for i in range(9)]
         for i in range(gradient.shape[0]):
             for j in range(gradient.shape[1]):
                 if canny[i,j] == 255:
                     phi = gradient[i,j]
                     slice = self.is_slice(phi)
                     phitable[slice].append(phi)
-                    Rtable[slice].append(np.array((origin[0] - i, origin[1] - j)))
+                    Rtable[slice].append(np.array((origin[0] - i+1, origin[1] - j+1)))
+                    #Rtable[slice].append(np.array((i-origin[0], j-origin[1])))
         self.phi_table = phitable
         return self.table_to_matrix(Rtable)
 
@@ -188,7 +189,8 @@ class hough_transform(object):
 
     def is_slice(self, phi):
         #round down wanted
-        return int(8*(divmod(phi+np.pi,2*np.pi)[1]/(2*np.pi)))
+        return int(8*(phi+np.pi)/(2*np.pi))
+        #return int(8*(divmod(phi+np.pi,2*np.pi)[1]/(2*np.pi)))
 
     def scale(self,image, d_x, d_y):
         return cv2.resize(image, (0,0), fx=d_x, fy=d_y, interpolation=cv2.INTER_CUBIC)
@@ -216,6 +218,9 @@ class hough_transform(object):
         #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_imgrad.jpg",self.gradient_image.astype("uint8"))
 
         cv2.imshow("grad", self.gradient_image.astype("uint8"))
+        kernel = np.ones((100,100))
+        self.weight_array = cv2.boxFilter(self.image_canny.astype(np.uint16)/255,-1, (100,100),normalize=False)
+
         #cv2.waitKey(0)
 
     def get_weighted_maximas(self, accum, ratio=0.8):
@@ -240,6 +245,20 @@ class hough_transform(object):
             result.append(np.array((candidate[0], candidate[1], accum_max[i], weight, 10000*accum_max[i]/weight+6*accum_max[i])))
         result = np.asarray(result).astype(np.int32)
         return result
+
+    def fast_weighted_maximas(self, accum, ratio=0.8):
+        maxindex = np.unravel_index(accum.argmax(), accum.shape)
+        candidates = np.argwhere(accum >= (accum[maxindex]*ratio))
+        result = []
+        accum_max = accum[candidates[...,0],candidates[...,1]]
+        weight = self.weight_array[candidates[...,0],candidates[...,1]]
+        for i,candidate in enumerate(candidates):
+            result.append(np.array((candidate[0], candidate[1], accum_max[i], weight[i], 10000*accum_max[i]/weight[i]+6*accum_max[i])))
+        result = np.asarray(result).astype(np.int32)
+        return result
+
+
+
 
     def transform(self):
         accum = np.zeros_like(self.gradient_image)
@@ -268,7 +287,7 @@ class hough_transform(object):
          # int(self.r_table.shape[1]/block_size[2])
         #todo: size something with modulo
         #done: iterate different angles 0:16 degree
-        for i in range(15):
+        for i in range(11):
             #done: additive rundungsfehler lösung: rotate r_zero
             angle = i
             self.r_table = self.rot_R_table(np.pi*(angle)/180)
@@ -291,7 +310,12 @@ class hough_transform(object):
             print("one run needs:", time.time()-t1)
             #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_accum.jpg",acc.astype("uint8"))
             if self.weighted:
+                t1 = time.time()
                 weighted_acc = self.get_weighted_maximas(acc, ratio=0.8)
+                print("standard", time.time() - t1)
+                t1 = time.time()
+                weighted_acc = self.fast_weighted_maximas(acc, ratio=0.8)
+                print("fast", time.time() - t1)
             else:
                 #todo: fix
                 weighted_acc = acc

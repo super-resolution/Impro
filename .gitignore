@@ -1,0 +1,7 @@
+files/
+__pycache__/
+.idea/
+test_files/
+setup.py
+*.ini
+

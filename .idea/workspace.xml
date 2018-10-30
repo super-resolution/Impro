@@ -2,19 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2f4ae034-5a9a-4e98-bb6a-6d9c1d1b47a1" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/processing/utility.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Impro.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Impro.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processing/CudaAlphaShape.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/CudaAlphaShape.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/processing/CudaHough.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/CudaHough.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processing/Filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/Filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/processing/utility.py" beforeDir="false" afterPath="$PROJECT_DIR$/processing/utility.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_alpha_vis.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_alpha_vis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_all.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_alpha.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_cuda.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_cv2_affine.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_hough_transform.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_image.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualisation/Render.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualisation/Render.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualisation/shaders/Alpha.vs" beforeDir="false" afterPath="$PROJECT_DIR$/visualisation/shaders/Alpha.vs" afterDir="false" />
     </list>
     <ignored path="HoughTransform.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,8 +31,8 @@
       <file leaf-file-name="CudaAlphaShape.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/processing/CudaAlphaShape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2516">
-              <caret line="154" column="79" selection-start-line="154" selection-start-column="74" selection-end-line="154" selection-end-column="79" />
+            <state relative-caret-position="1599">
+              <caret line="113" column="13" lean-forward="true" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
               <folding>
                 <element signature="e#6865#8021#0" />
               </folding>
@@ -48,8 +43,8 @@
       <file leaf-file-name="CudaHough.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/processing/CudaHough.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="34" column="20" lean-forward="true" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
+            <state relative-caret-position="587">
+              <caret line="156" column="45" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="45" />
             </state>
           </provider>
         </entry>
@@ -57,8 +52,8 @@
       <file leaf-file-name="test_alpha_vis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test_alpha_vis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="884">
-              <caret line="52" column="17" selection-start-line="52" selection-start-column="16" selection-end-line="52" selection-end-column="17" />
+            <state relative-caret-position="-408">
+              <caret line="45" selection-start-line="45" selection-end-line="45" />
               <folding>
                 <element signature="e#9#20#0" expanded="true" />
               </folding>
@@ -66,20 +61,53 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utility.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/processing/utility.py">
+      <file leaf-file-name="test_limits.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_files/test_limits.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="2" column="29" selection-start-line="2" selection-start-column="27" selection-end-line="2" selection-end-column="29" />
+            <state relative-caret-position="2754">
+              <caret line="162" column="33" lean-forward="true" selection-start-line="162" selection-start-column="33" selection-end-line="162" selection-end-column="33" />
+              <folding>
+                <element signature="e#0#54#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Alpha.vs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/visualisation/shaders/Alpha.vs">
+      <file leaf-file-name="utility.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/processing/utility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="51" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
+            <state relative-caret-position="1650">
+              <caret line="129" column="5" lean-forward="true" selection-start-line="129" selection-start-column="5" selection-end-line="129" selection-end-column="5" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Filter.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/processing/Filter.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="460">
+              <caret line="30" selection-start-line="30" selection-end-line="50" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_all.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_files/test_all.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="629">
+              <caret line="42" column="9" selection-start-line="42" selection-start-column="2" selection-end-line="42" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_alpha.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_files/test_alpha.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="35">
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
             </state>
           </provider>
         </entry>
@@ -96,41 +124,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test_performance.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test_files/test_performance.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="24" column="20" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="20" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_pearson.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test_files/test_pearson.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Image.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/processing/Image.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1292">
-              <caret line="84" column="8" selection-start-line="84" selection-start-column="8" selection-end-line="84" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Render.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/visualisation/Render.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2567">
-              <caret line="159" column="35" selection-start-line="159" selection-start-column="31" selection-end-line="159" selection-end-column="35" />
+            <state relative-caret-position="7582">
+              <caret line="446" column="58" selection-start-line="446" selection-start-column="47" selection-end-line="446" selection-end-column="58" />
               <folding>
                 <element signature="e#237#255#0" expanded="true" />
               </folding>
@@ -196,7 +194,6 @@
         <option value="$PROJECT_DIR$/tests/test_hough_transform.py" />
         <option value="$PROJECT_DIR$/tests/test.py" />
         <option value="$PROJECT_DIR$/tests/test_alpha_vis.py" />
-        <option value="$PROJECT_DIR$/processing/Filter.py" />
         <option value="$PROJECT_DIR$/tests/test_cv2_affine.py" />
         <option value="$PROJECT_DIR$/test_Gradient/asdf.py" />
         <option value="$PROJECT_DIR$/test_Gradient/cell_mask.py" />
@@ -206,20 +203,21 @@
         <option value="$PROJECT_DIR$/tests/test_performance.py" />
         <option value="$PROJECT_DIR$/tests/compare_alpha_shapes.py" />
         <option value="$PROJECT_DIR$/tests/test_pearson.py" />
-        <option value="$PROJECT_DIR$/processing/CudaAlphaShape.py" />
         <option value="$PROJECT_DIR$/visualisation/shaders/Alpha.vs" />
-        <option value="$PROJECT_DIR$/processing/CudaHough.py" />
         <option value="$PROJECT_DIR$/test_files/test_pearson.py" />
-        <option value="$PROJECT_DIR$/processing/utility.py" />
+        <option value="$PROJECT_DIR$/processing/test_limits.py" />
+        <option value="$PROJECT_DIR$/processing/CudaHough.py" />
+        <option value="$PROJECT_DIR$/processing/CudaAlphaShape.py" />
         <option value="$PROJECT_DIR$/test_alpha_vis.py" />
+        <option value="$PROJECT_DIR$/processing/Filter.py" />
+        <option value="$PROJECT_DIR$/processing/utility.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-7" />
-    <option name="y" value="2" />
     <option name="width" value="1932" />
-    <option name="height" value="1165" />
+    <option name="height" value="1167" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -227,6 +225,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -244,16 +243,20 @@
               <item name="Impro" type="462c0819:PsiDirectoryNode" />
               <item name="test_files" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Impro" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Impro" type="462c0819:PsiDirectoryNode" />
+              <item name="visualisation" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Update2to3_PyQt5" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ISTA" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -290,24 +293,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="asdf" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="impro" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test_Gradient" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="C:\Users\biophys\PycharmProjects\Impro\test_Gradient\cell_mask.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -380,6 +365,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="C:\Users\biophys\PycharmProjects\Impro\test_alpha_vis.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="test_limits.py" type="PythonConfigurationType" factoryName="Python">
+      <module name="Impro" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\dev\WinPython-64bit-3.6.3.0Qt5\python-3.6.3.amd64\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\biophys\PycharmProjects\Impro\test_files\test_limits.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -462,20 +465,35 @@
       <option name="_new_target" value="&quot;&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
     </configuration>
+    <configuration name="py.test in test_limits.py" type="tests" factoryName="py.test" temporary="true">
+      <module name="Impro" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/processing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test_files/test_limits.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
     <list>
+      <item itemvalue="Python.test_limits.py" />
       <item itemvalue="Python.test_alpha_vis" />
-      <item itemvalue="Python.asdf" />
       <item itemvalue="Python.test (1)" />
       <item itemvalue="Python.compare_alpha_shapes" />
       <item itemvalue="Python.test_alpha_vis (1)" />
+      <item itemvalue="Python tests.py.test in test_limits.py" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.test_alpha_vis (1)" />
+        <item itemvalue="Python tests.py.test in test_limits.py" />
         <item itemvalue="Python.compare_alpha_shapes" />
         <item itemvalue="Python.test_alpha_vis" />
         <item itemvalue="Python.test (1)" />
-        <item itemvalue="Python.asdf" />
       </list>
     </recent_temporary>
   </component>
@@ -543,32 +561,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 50m 27s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 51m 01s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 51m 47s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 52m 09s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 52m 28s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 52m 59s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 53m 16s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 54m 43s.xml">
-      <configuration name="py.test in Test_image.py" configurationId="tests" />
-    </history-entry>
     <history-entry file="py_test_in_Test_image_py - 2017.12.19 at 13h 54m 52s.xml">
       <configuration name="py.test in Test_image.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 04m 58s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 05m 47s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 06m 41s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 06m 49s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 07m 24s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 07m 50s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 09m 43s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 11m 12s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="py_test_in_test_limits_py - 2018.10.15 at 16h 12m 49s.xml">
+      <configuration name="py.test in test_limits.py" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -581,17 +602,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="2" width="1932" height="1165" extended-state="0" />
+    <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49499285" visible="true" weight="0.21398747" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49499285" visible="true" weight="0.11953125" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32885906" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.54373026" side_tool="true" weight="0.3307766" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.45626977" visible="true" weight="0.3342857" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.45626977" visible="true" weight="0.26979247" />
       <window_info anchor="bottom" id="Version Control" order="7" sideWeight="0.4963119" weight="0.32761905" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32885906" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32885906" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.47260273" weight="0.35428572" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.47260273" weight="0.35280553" />
       <window_info id="Favorites" order="2" sideWeight="0.50500715" side_tool="true" weight="0.18872404" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -662,6 +684,16 @@
           <line>26</line>
           <option name="timeStamp" value="368" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/test_files/test_limits.py</url>
+          <line>161</line>
+          <option name="timeStamp" value="434" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/processing/CudaHough.py</url>
+          <line>317</line>
+          <option name="timeStamp" value="438" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -670,27 +702,15 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="419" />
+      <option name="time" value="441" />
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="weighted_acc[0:1269] " />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test_alpha_vis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="62" column="14" selection-start-line="62" selection-start-column="2" selection-end-line="62" selection-end-column="14" />
-          <folding>
-            <element signature="e#9#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_files/test_hough_transform.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="37" selection-start-line="37" selection-end-line="38" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/processing/CudaAlphaShape.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -838,13 +858,6 @@
     <entry file="file://$PROJECT_DIR$/visualisation/common/Buffer.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_files/test_all.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="47" column="1" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/dev/WinPython-64bit-3.6.3.0Qt5/python-3.6.3.amd64/Lib/site-packages/pycuda/compiler.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -871,9 +884,6 @@
           <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://C:/dev/WinPython-64bit-3.6.3.0Qt5/python-3.6.3.amd64/Lib/site-packages/cv2/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/test_files/test_cv2_affine.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -913,20 +923,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_files/test_alpha.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/processing/Filter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="38" column="48" selection-start-line="38" selection-start-column="48" selection-end-line="38" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/visualisation/Shader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1275">
@@ -934,13 +930,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/visualisation/Render.py">
+    <entry file="file://$PROJECT_DIR$/test_files/test_performance.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2567">
-          <caret line="159" column="35" selection-start-line="159" selection-start-column="31" selection-end-line="159" selection-end-column="35" />
-          <folding>
-            <element signature="e#237#255#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="357">
+          <caret line="24" column="20" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -951,20 +944,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_files/test_performance.py">
+    <entry file="file://$PROJECT_DIR$/processing/Image.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="24" column="20" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1309">
+          <caret line="84" column="8" selection-start-line="84" selection-start-column="8" selection-end-line="84" selection-end-column="8" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/processing/Image.py">
+    <entry file="file://C:/dev/WinPython-64bit-3.6.3.0Qt5/python-3.6.3.amd64/Lib/site-packages/cv2/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_files/test_pearson.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1292">
-          <caret line="84" column="8" selection-start-line="84" selection-start-column="8" selection-end-line="84" selection-end-column="8" />
+        <state relative-caret-position="527">
+          <caret line="31" column="67" selection-start-line="31" selection-start-column="60" selection-end-line="31" selection-end-column="67" />
         </state>
       </provider>
     </entry>
@@ -978,34 +971,68 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Temp/legend.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="26" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/processing/CudaHough.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="587">
+          <caret line="156" column="45" selection-start-line="156" selection-start-column="36" selection-end-line="156" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/processing/CudaAlphaShape.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2516">
-          <caret line="154" column="79" selection-start-line="154" selection-start-column="74" selection-end-line="154" selection-end-column="79" />
+        <state relative-caret-position="1599">
+          <caret line="113" column="13" lean-forward="true" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
           <folding>
             <element signature="e#6865#8021#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/processing/CudaHough.py">
+    <entry file="file://$PROJECT_DIR$/test_files/test_alpha.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="34" column="20" lean-forward="true" selection-start-line="34" selection-start-column="20" selection-end-line="34" selection-end-column="20" />
+        <state relative-caret-position="35">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test_files/test_pearson.py">
+    <entry file="file://$PROJECT_DIR$/visualisation/Render.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="32" />
+        <state relative-caret-position="7582">
+          <caret line="446" column="58" selection-start-line="446" selection-start-column="47" selection-end-line="446" selection-end-column="58" />
+          <folding>
+            <element signature="e#237#255#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_files/test_all.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="42" column="9" selection-start-line="42" selection-start-column="2" selection-end-line="42" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_files/test_limits.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2754">
+          <caret line="162" column="33" lean-forward="true" selection-start-line="162" selection-start-column="33" selection-end-line="162" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#54#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/test_alpha_vis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
-          <caret line="52" column="17" selection-start-line="52" selection-start-column="16" selection-end-line="52" selection-end-column="17" />
+        <state relative-caret-position="-408">
+          <caret line="45" selection-start-line="45" selection-end-line="45" />
           <folding>
             <element signature="e#9#20#0" expanded="true" />
           </folding>
@@ -1014,8 +1041,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/processing/utility.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="29" selection-start-line="2" selection-start-column="27" selection-end-line="2" selection-end-column="29" />
+        <state relative-caret-position="1650">
+          <caret line="129" column="5" lean-forward="true" selection-start-line="129" selection-start-column="5" selection-end-line="129" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/processing/Filter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="460">
+          <caret line="30" selection-start-line="30" selection-end-line="50" selection-end-column="32" />
         </state>
       </provider>
     </entry>

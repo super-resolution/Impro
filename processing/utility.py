@@ -6,7 +6,7 @@ from visualisation import Render as rend
 from processing import CudaAlphaShape as alpha
 from processing.CudaHough import hough_transform
 from skimage import transform
-from scipy.stats import pearsonr
+from scipy.stats.mstats import pearsonr
 from PyQt5.QtCore import QPoint
 
 
@@ -29,17 +29,30 @@ def create_alpha_shape(storm_data):
     widget = gl.GLViewWidget()
     widget.show()
     item2 = rend.alpha_complex(filename = r"\Alpha")
+    sizex = points[:,1].max()/32.2
+    sizey = points[:,0].max()/32.2
 
-
+    #widget.addItem(item2)
 
     item2.show()
     item2.set_data(position=points[...,0:2], simplices=points[...,2:5], alpha=130.0, size=float(1))
+    item2.background_render(QPoint(sizey, sizex), 1.0)
     #item2.background_render(QPoint(1111,1361),1.0)
-    item2.background_render(QPoint(1059,1051),1.0) #render in fitting px size
+    #item2.background_render(QPoint(1059,1051),1.0) #render in fitting px size
+    im = np.array(item2.image)
+    #app.exec()
+    return im
+
+def create_storm(storm_data):
+    widget = gl.GLViewWidget()
+    widget.show()
+    item2 = rend.points(filename=r"\STORM2")
+    item2.show()
+    item2.set_data(position=storm_data, size=float(20), maxEmission=256.0)
+    item2.background_render(QPoint(1040, 1040), 1.0)
     im = np.array(item2.image)
 
     return im
-
 
 def find_mapping(image, c_template, n_col=5, n_row=5):
     results = []
@@ -106,18 +119,28 @@ def error_management(result_list, points1, points2, n_row = 5):
     p2 = np.fliplr(p2)
     return p1,p2
 
-def test_pearson(sim, dstorm, map):
+def test_pearson(sim, dstorm,mask, map):
 
-    mask = np.ones_like(dstorm).astype(np.float32)
+    #mask = np.ones_like(dstorm).astype(np.float32)
     binary_mask = transform.warp(mask, inverse_map=map.inverse).astype(np.bool)
 
-    dstorm_warped = transform.warp(dstorm, inverse_map=map.inverse)
-    masked_dstorm = np.ma.array(data=dstorm_warped, mask=np.logical_not(binary_mask))#
+
+    #cv2.imshow("mask",mask.astype(np.uint8)*255)
+    #cv2.imshow("mask_warp",binary_mask.astype(np.uint8)*255)
+    #cv2.waitKey(0)
+    dstorm_warped = transform.warp(dstorm, inverse_map=map.inverse)*255
+    masked_dstorm = np.ma.array(data=dstorm_warped, mask=np.logical_not(binary_mask))
 
     masked_sim = np.ma.array(data=sim, mask=np.logical_not(binary_mask))
-    masked_mask = np.ma.array(data=binary_mask, mask=np.logical_not(binary_mask))
+    #masked_mask = np.ma.array(data=binary_mask, mask=np.logical_not(binary_mask))
     corr_coef = pearsonr(masked_dstorm.flatten(),masked_sim.flatten())
+    #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\weighting\mask_dstorm.png", dstorm_warped.astype(np.uint8))
+
+    #cv2.imshow("nasked",masked_dstorm)
+    #cv2.imshow("masked", masked_sim)
+    #corr_coef = np.ma.corrcoef(masked_dstorm.flatten(),masked_sim.flatten(), allow_masked=True)
     print("image:",corr_coef)#masked correlation only compare visible parts
-    cut_sim_masked = (sim*binary_mask).astype(np.uint8)
+    #cut_sim_masked = (sim*binary_mask).astype(np.uint8)
+    #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\weighting\mask_sim.png", cut_sim_masked.astype(np.uint8))
     #print("mask:",pearsonr(binary_mask.flatten()*255, cut_sim_masked.flatten()))#unmasked correlation to white
     return corr_coef

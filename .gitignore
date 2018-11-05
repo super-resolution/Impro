@@ -1,6 +1,8 @@
 files/
 __pycache__/
 .idea/
+build/
+dist/
 test_files/
 setup.py
 *.ini

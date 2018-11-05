@@ -1,4 +1,4 @@
-# Super-resolution correlator
+# Impro
 
 Impro is a package for data processing in super-resolution microscopy. It contains high perfomant
 GPU based visualization and algorithms for 2D and 3D data. <br />

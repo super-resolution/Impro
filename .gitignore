@@ -4,6 +4,5 @@ __pycache__/
 build/
 dist/
 test_files/
-setup.py
 *.ini
 

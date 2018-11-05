@@ -28,10 +28,15 @@ Some images
 
 1. Clone git repository
 2. Open cmd and cd to repository
-3. Start GUI with
 
 ```
-python main.py
+python setup.py
 ```
-4. Install missing packages if necessary
+3. Install missing packages if necessary
 
+### Examples
+The file
+```
+impro/main.py
+```
+provides example code for using the package. An Impro based GUI can be found at [super-resolution correlator](https://github.com/super-resolution/Super-resolution-correlator)

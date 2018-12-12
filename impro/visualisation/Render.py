@@ -101,6 +101,115 @@ class custom_graphics_item(GLGraphicsItem):
         self._shader.__setitem__("u_projection", self.projection)
         self.setupGLState()
 
+class triangulation_3(custom_graphics_item):
+    def __init__(self, **kwds):
+        super().__init__(**kwds)
+        basepath = os.path.dirname(os.path.realpath(__file__)) +r"\shaders"
+        if "filename" in kwds.keys():
+            self.filename = basepath + kwds.pop("filename")
+        else:
+            raise Exception("Need shaders filenames")
+        self.enums = [GL_DEPTH_TEST, GL_BLEND]
+        self.position = np.array(([[0,0,0,0,0,0,0]]))
+        self.simplices = np.zeros((1,3)).astype(np.int32)
+        self.image = None
+        self.backgroundRender=False
+        self.updateData = True
+        self.color1 = np.array([1.0,1.0,1.0,1.0])
+        self.color2 = np.array([1.0,1.0,1.0,1.0])
+        self.args = ["position", "color1", "color2", "simplices"]
+        self._m_vertexarray_buffer = vbo.VBO(self.position[self.simplices].astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
+        #self._m_simplexarray_buffer = vbo.VBO(self.simplices.astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
+        self.set_data(**kwds)
+
+    def set_data(self, **kwds):
+        """
+        Set data for point cloud rendering
+        :param kwds: allowed arguments are: position, size, color, maxEmission and cluster
+        """
+        for k in kwds.keys():
+            if k not in self.args:
+                raise Exception('Invalid keyword argument: %s (allowed arguments are %s)' % (k, str(self.args)))
+        for arg in self.args:
+            if arg in kwds:
+                setattr(self, arg, kwds[arg])
+        self.updateData = True
+
+    def _update(self):
+        self.updateData = False
+        #self._shader.__setitem__("size", self.size)
+        #self.alpha = (self.alpha+10)%200
+        #self._shader.__setitem__("alpha", self.alpha)
+        #self._shader.__setitem__("color", self.color)
+        pos = self.position[self.simplices.astype(np.int32)].astype("f")
+        pos = np.reshape(pos, (pos.shape[0]*pos.shape[1],pos.shape[2]))
+        self._m_vertexarray_buffer.set_array(pos , size = None )
+        #self._m_simplexarray_buffer.set_array(self.simplices.astype("f"))
+
+        #if type(self.position).__module__ == np.__name__:
+        #    self.ratio = self.position[:,0].max()/self.position[:,1].max()
+
+    def paint(self):
+        super().paint()
+        #Enable several enumerators
+        #self._shader.__setitem__("color", self.color1)
+
+        # for enum in self.enums:
+        #     glEnable(enum)
+        # # Blending to get a smooth point cloud
+        # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)#todo:overlapp via blend
+        if self.updateData:
+            self._update()
+            print("Updating Alpha data")
+        # with self._shader:
+        #
+        #
+        #     # Bind buffer objects
+        #
+        #     glEnableVertexAttribArray(1)
+        #     self._m_vertexarray_buffer.bind()
+        #     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, None)
+        #     try:
+        #         # Draw everything
+        #         #glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        #         glDrawArrays(GL_TRIANGLES, 0, int(self.simplices.shape[0]*3))
+        #
+        #     finally:
+        #         # Clean up
+        #         glDisableVertexAttribArray(1)
+        #         self._m_vertexarray_buffer.unbind()
+        #         #self._m_simplexarray_buffer.unbind()
+        #         # Disable enumerators
+        #         for enum in self.enums:
+        #             glDisable(enum)
+
+        glLineWidth(float(1.0))
+        self._shader.__setitem__("color", self.color2)
+        for enum in self.enums:
+            glEnable(enum)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        with self._shader:
+            # Bind buffer objects
+            glEnableVertexAttribArray(1)
+            self._m_vertexarray_buffer.bind()
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, None)
+            try:
+                # Draw everything
+                glPolygonOffset(-1, -1)
+                glEnable(GL_POLYGON_OFFSET_LINE)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+                glDrawArrays(GL_TRIANGLES, 0, int(self.simplices.shape[0] * 3))
+            finally:
+                # Clean up
+                glDisable(GL_POLYGON_OFFSET_LINE)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+                glDisableVertexAttribArray(1)
+                self._m_vertexarray_buffer.unbind()
+                #self._m_simplexarray_buffer.unbind()
+                # Disable enumerators
+                for enum in self.enums:
+                    glDisable(enum)
+
 
 class alpha_complex(custom_graphics_item):
     def __init__(self, **kwds):

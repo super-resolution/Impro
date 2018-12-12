@@ -129,14 +129,14 @@ class hough_transform(object):
         gradient = self.create_gradient(canny)
         #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_gradient.jpg",gradient.astype("uint8"))
 
-        cv2.imshow("temp", gradient.astype("uint8"))
+        #cv2.imshow("temp", gradient.astype("uint8"))
         self.r_table_zero = self.create_R_table(gradient, canny)
         #self.r_table = self.rot_R_table(np.pi*1/18)
     
     def create_template(self, image):
         im = cv2.blur(image, (4,4))
         canny = cv2.Canny(im, 130,200)
-        cv2.imshow("ctemp", canny.astype("uint8"))
+        #cv2.imshow("ctemp", canny.astype("uint8"))
         return canny
 
     def rot_R_table(self, angle):
@@ -212,12 +212,12 @@ class hough_transform(object):
         self.image_canny = cv2.Canny(im, 130,180)
         #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_imcanny.jpg",self.image_canny)
 
-        cv2.imshow("canny", self.image_canny.astype("uint8"))
+        #cv2.imshow("canny", self.image_canny.astype("uint8"))
         #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\SIM_edge_canny.jpg",im.astype("uint8"))
         self.gradient_image = self.create_gradient(self.image_canny)
         #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_imgrad.jpg",self.gradient_image.astype("uint8"))
 
-        cv2.imshow("grad", self.gradient_image.astype("uint8"))
+        #cv2.imshow("grad", self.gradient_image.astype("uint8"))
         kernel = np.ones((100,100))
         self.weight_array = cv2.boxFilter(self.image_canny.astype(np.uint16)/255,-1, (100,100),normalize=False)
 
@@ -287,7 +287,7 @@ class hough_transform(object):
          # int(self.r_table.shape[1]/block_size[2])
         #todo: size something with modulo
         #done: iterate different angles 0:16 degree
-        for i in range(11):
+        for i in range(15):
             #done: additive rundungsfehler lösung: rotate r_zero
             angle = i
             self.r_table = self.rot_R_table(np.pi*(angle)/180)
@@ -310,9 +310,9 @@ class hough_transform(object):
             print("one run needs:", time.time()-t1)
             #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_accum.jpg",acc.astype("uint8"))
             if self.weighted:
-                t1 = time.time()
-                weighted_acc = self.get_weighted_maximas(acc, ratio=0.8)
-                print("standard", time.time() - t1)
+                #t1 = time.time()
+                #weighted_acc = self.get_weighted_maximas(acc, ratio=0.8)
+                #print("standard", time.time() - t1)
                 t1 = time.time()
                 weighted_acc = self.fast_weighted_maximas(acc, ratio=0.8)
                 print("fast", time.time() - t1)

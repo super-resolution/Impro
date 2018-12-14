@@ -16,9 +16,8 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * Nvidia GPU with compute capability 3 or higher
-* Cuda 8.0 or higher
-* pycuda
-* Python opencv
+* Nvidia GPU with compute capability 3 or higher
+* Cuda 9.0 from [CUDA website](https://developer.nvidia.com/cuda-90-download-archive) (CUDA 10 is yet not supported by pycuda)
 
 ```
 Some images
@@ -28,11 +27,14 @@ Some images
 
 1. Clone git repository
 2. Open cmd and cd to repository
-
+3. Install requirements with:
+```
+pip install -r requirements.txt
+```
+4. Run:
 ```
 python setup.py
 ```
-3. Install missing packages if necessary
 
 ### Examples
 The file

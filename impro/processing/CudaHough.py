@@ -199,9 +199,9 @@ class hough_transform(object):
         X = cv2.Sobel(image,cv2.CV_64F,1,0,ksize=5)
         Y = cv2.Sobel(image,cv2.CV_64F,0,1,ksize=5)
         gradient = np.zeros(image.shape)
-        for i in range(image.shape[0]):
-            for j in range(image.shape[1]):
-                gradient[i][j] = np.arctan2(X[i,j],Y[i,j])
+        #for i in range(image.shape[0]):
+        #    for j in range(image.shape[1]):
+        gradient = np.arctan2(X,Y)
         return gradient
     
     def set_image(self, image):
@@ -242,7 +242,7 @@ class hough_transform(object):
             #maxl = accum[candidate[0],candidate[1]]+accum[candidate[0]+1,candidate[1]]+accum[candidate[0]-1,candidate[1]]+accum[candidate[0],candidate[1]+1]+accum[candidate[0],candidate[1]-1]
             subarray = self.image_canny[ind1[0]:ind1[1],ind2[0]:ind2[1]]
             weight = (subarray == 255).sum()
-            result.append(np.array((candidate[0], candidate[1], accum_max[i], weight, 10000*accum_max[i]/weight+6*accum_max[i])))
+            result.append(np.array((candidate[0], candidate[1], accum_max[i], weight, 6*accum_max[i])))
         result = np.asarray(result).astype(np.int32)
         return result
 
@@ -276,8 +276,8 @@ class hough_transform(object):
         attr = dev.get_attributes()
 
         max_threads = pycuda.tools.DeviceData(dev=None).max_threads
-        print(max_threads)
-        print(drv.device_attribute.MAX_BLOCK_DIM_X)
+        #print(max_threads)
+        #print(drv.device_attribute.MAX_BLOCK_DIM_X)
         n = max_threads/1024
         if n < 1:
             raise(EnvironmentError("Upgrade GPU"))
@@ -307,26 +307,25 @@ class hough_transform(object):
             self.create_accum(accum_ptr, r_table_ptr, grad_ptr,  block=block_size, grid=grid)
             t1 = time.time()
             acc = A.get()
-            print("one run needs:", time.time()-t1)
+            #print("one run needs:", time.time()-t1)
             #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\Hough_complete_accum.jpg",acc.astype("uint8"))
             if self.weighted:
-                #t1 = time.time()
-                #weighted_acc = self.get_weighted_maximas(acc, ratio=0.8)
+
+
                 #print("standard", time.time() - t1)
-                t1 = time.time()
                 weighted_acc = self.fast_weighted_maximas(acc, ratio=0.8)
-                print("fast", time.time() - t1)
             else:
                 #todo: fix
                 weighted_acc = acc
             x=np.unravel_index(weighted_acc[...,4].argmax(),weighted_acc.shape[0])
             if weighted_acc[x,4]>res[1][4]:
                 res = (angle,weighted_acc[x])
-            print("Rotation:"+ str(angle) +"° \n maximal weighted find"+ str(weighted_acc[x]))
+            #print("Rotation:"+ str(angle) +"° \n maximal weighted find"+ str(weighted_acc[x]))
         #dtoh result from gpu
         #done: get max return rotation and index
         #drv.stop_profiler()
-        print("final result:" + str(res))
+
+        #print("final result:" + str(res))
 
         #t = G.get()
         return res

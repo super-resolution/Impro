@@ -14,7 +14,7 @@ app = pg.mkQApp()
 
 
 
-def create_alpha_shape(storm_data):
+def create_alpha_shape(storm_data, alpha_value):
     k_simplices = alpha.get_k_simplices(storm_data[...,0:2])[0]
 
     points = np.empty((2*k_simplices.shape[0],5))
@@ -35,7 +35,7 @@ def create_alpha_shape(storm_data):
     #widget.addItem(item2)
 
     item2.show()
-    item2.set_data(position=points[...,0:2], simplices=points[...,2:5], alpha=130.0, size=float(1))
+    item2.set_data(position=points[...,0:2], simplices=points[...,2:5], alpha=np.float64(alpha_value ), size=float(1))
     item2.background_render(QPoint(sizey, sizex), 1.0)
     #item2.background_render(QPoint(1111,1361),1.0)
     #item2.background_render(QPoint(1059,1051),1.0) #render in fitting px size
@@ -54,10 +54,12 @@ def create_storm(storm_data):
 
     return im
 
-def find_mapping(image, c_template, n_col=5, n_row=5):
+def find_mapping(image, c_template, n_col=5, n_row=5, offset=0):
     results = []
     overlay = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA)
     template = cv2.cvtColor(c_template, cv2.COLOR_RGBA2GRAY)
+
+    norm = np.linalg.norm(template)
 
     H = hough_transform()
     H.set_image(image)
@@ -69,10 +71,19 @@ def find_mapping(image, c_template, n_col=5, n_row=5):
     overlay = overlay.astype(np.uint16)
     for i in range(n_col):
         for j in range(n_row):
-            k,j = 0+j*200,200+j*200
-            points1.append(np.array((k+100,i*200+100)))
-            template_segment = template[k:j,0+i*200:200+i*200]
-            imnew = c_template[k:j,0+i*200:200+i*200]
+            k,l = j*200+offset,200+j*200+offset
+            m,n = i*200+offset, 200+i*200+offset
+            template_segment = template[k:l,m:n]
+            #todo: fix out of bounds ... !!!!!!!!
+            points1.append(np.array((k+template_segment.shape[0]/2,m+template_segment.shape[1]/2)))
+
+            norm2 = np.linalg.norm(template_segment)
+            if norm2< 0.15*norm:
+                results.append([-1,np.array([-1,-1,-1,-1])])
+                points2.append(np.array([0,0]))
+                print("not enough data")
+                continue
+            imnew = c_template[k:l,m:n]
             H.set_template(template_segment)
             res = H.transform()
             results.append(res[0:2])
@@ -80,43 +91,50 @@ def find_mapping(image, c_template, n_col=5, n_row=5):
 
             #imgs_t.append(imnew)
             #paint segments in image
-            try:
-                M = cv2.getRotationMatrix2D((imnew.shape[0] / 2, imnew.shape[1] / 2), res[0], 1)
-                imnew = cv2.warpAffine(imnew, M, (imnew.shape[0], imnew.shape[1]))
-                for h in range(200):
-                    for k in range(200):
-                        overlay[2*res[1][0]-100+h,2*res[1][1]-100+k] += imnew[h,k,0:4]
-            except: print("image out of bounds")
+
+            M = cv2.getRotationMatrix2D((imnew.shape[0] / 2, imnew.shape[1] / 2), res[0], 1)
+            imnew = cv2.warpAffine(imnew, M, (imnew.shape[0], imnew.shape[1]))
+            for h in range(template_segment.shape[0]):
+                    for e in range(template_segment.shape[1]):
+                        try:
+                            overlay[int(2*res[1][0]-template_segment.shape[0]/2+h),int(2*res[1][1]-template_segment.shape[1]/2+e)] += imnew[h,e,0:4]
+                        except Exception as error:
+                            print('Caught this error: ' + repr(error))
     return points1,points2,overlay,results#todo:result wrapper
 
 
 def error_management(result_list, points1, points2, n_row = 5):
     num = []
     for i,ent1 in enumerate(result_list):#todo: write function
+        if ent1[1][-1] < 0:
+            continue
         row1 = int(i/n_row)
         col1 = i%n_row
         max=0
-        print(i)
+        #print(i)
         for j,ent2 in enumerate(result_list):
+            if ent2[1][-1]<0:
+                continue
             row2 = int(j/n_row)
             col2 = j%n_row
             val1 = ent1[1][0]-(col1-col2)*100*np.cos(np.deg2rad(ent1[0]))+(row1-row2)*100*np.sin(np.deg2rad(ent1[0]))
             val2 = ent1[1][1]-(row1-row2)*100*np.cos(np.deg2rad(ent1[0]))-(col1-col2)*100*np.sin(np.deg2rad(ent1[0]))
-            if np.absolute(val1-ent2[1][0])<25 and np.absolute(val2-ent2[1][1])<25:#todo: tangens
-                print(True)
+            if np.absolute(val1-ent2[1][0])<25 and np.absolute(val2-ent2[1][1])<25:
+                #print(True)
                 max+=1
-            else:
-                print(False)
-        if max>4:
+            #else:
+                #print(False)
+        if max>7:
             num.append(i)
     points1 = np.asarray(points1)
     points2 = np.asarray(points2)
     points1 = points1[np.array(num)]
     points2 = points2[np.array(num)]
-    print(points1, points2)
     p1 = np.fliplr(points1)
     p2 = np.float32(points2)*2
     p2 = np.fliplr(p2)
+    print(p1, p2)
+
     return p1,p2
 
 def test_pearson(sim, dstorm,mask, map):

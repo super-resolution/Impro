@@ -33,7 +33,7 @@ pip install -r requirements.txt
 ```
 4. Run:
 ```
-python setup.py
+python setup.py install
 ```
 
 ### Examples

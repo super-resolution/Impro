@@ -18,6 +18,7 @@ impro/test_files/__init__.py
 impro/test_files/compare_alpha_shapes.py
 impro/test_files/test_all.py
 impro/test_files/test_alpha.py
+impro/test_files/test_alpha_value.py
 impro/test_files/test_cuda.py
 impro/test_files/test_cv2_affine.py
 impro/test_files/test_hough_transform.py
@@ -26,6 +27,7 @@ impro/test_files/test_limits.py
 impro/test_files/test_pearson.py
 impro/test_files/test_performance.py
 impro/test_files/test_triangulation.py
+impro/test_files/voronoi_test.py
 impro/visualisation/Render.py
 impro/visualisation/Shader.py
 impro/visualisation/__init__.py

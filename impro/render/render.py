@@ -394,7 +394,7 @@ class image(custom_graphics_item):
         self.flip_ud = False
         self.smooth=True
         self.args.extend(["data", "ch_numb", "flip_lr", "flip_ud", "smooth"])
-        self.blend_function = "additative"
+        self.blend_function = "semi transparent"
 
 
     def _update(self):

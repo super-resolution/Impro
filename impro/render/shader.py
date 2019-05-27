@@ -23,6 +23,7 @@ class shader(object):
     def __init__(self, filename):
         self.filename = os.path.basename(filename)
         self.m_shaders = []
+        self._enums = []
         self.m_program = glCreateProgram()
         self.m_shaders.append(self.create_shader(self.load_shader(filename + ".vs"), GL_VERTEX_SHADER))
         self.m_shaders.append(self.create_shader(self.load_shader(filename + ".fs"), GL_FRAGMENT_SHADER))
@@ -90,6 +91,8 @@ class shader(object):
         return glGetAttribLocation(self.m_program, name.encode('utf_8'))
 
     def __enter__(self):
+        for enum in self._enums:
+            glEnable(enum)
         glUseProgram(self.m_program)
         try:
             for uniform, data in self.m_uniform.items():
@@ -154,5 +157,15 @@ class shader(object):
             return None
 
     def __exit__(self, *args):
+        for enum in self._enums:
+            glDisable(enum)
         if len(self.m_shaders) > 0:
             glUseProgram(0)
+
+    @property
+    def enums(self):
+        return self._enums
+
+    @enums.setter
+    def enums(self, value):
+        self._enums = value

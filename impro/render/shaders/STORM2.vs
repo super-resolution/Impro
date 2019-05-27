@@ -21,7 +21,7 @@ void main()
             v_color = bg_color;
                 }
         else if (cluster > 0.1){
-            v_color = vec4(1.0);
+            v_color = vec4(0.0,1.0,0.0,0.5);
         }
         //else if (x < 2.0){
         //    v_color = vec4(1.0,1.0,1.0,1.0);

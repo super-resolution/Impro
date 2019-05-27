@@ -1,6 +1,7 @@
 setup.py
 impro/__init__.py
 impro/main.py
+impro/test_volume_rendering.py
 impro.egg-info/PKG-INFO
 impro.egg-info/SOURCES.txt
 impro.egg-info/dependency_links.txt

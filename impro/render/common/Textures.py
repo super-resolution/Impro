@@ -52,6 +52,34 @@ class Create3DTexture:
         glBindTexture(GL_TEXTURE_3D,0)
         self.dataSet = True
 
+class CreateVolumeTexture:
+    def __init__(self):
+        self.textureHandle = glGenTextures(1)
+        self.dataSet = False
+
+    def set_texture(self, data):
+        width = data.shape[1]
+        height = data.shape[2]
+        depth = data.shape[0]
+
+        glBindTexture(GL_TEXTURE_3D, self.textureHandle);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S,
+                        GL_CLAMP)
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T,
+                        GL_CLAMP)
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R,
+                        GL_CLAMP)
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER,
+                        GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER,
+                        GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_BASE_LEVEL, 0)
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAX_LEVEL, 4)
+
+        glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, width, height, depth, 0, GL_RED, GL_UNSIGNED_BYTE, data.astype(np.uint8))
+        glGenerateMipmap(GL_TEXTURE_3D)
+        self.dataSet = True
+
 class CreateNoise:
     def __init__(self):
         self.textureHandle = glGenTextures(1)

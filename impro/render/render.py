@@ -11,13 +11,18 @@ from OpenGL.GL import *
 from PyQt5 import QtCore
 from OpenGL.arrays import vbo
 from pyqtgraph.opengl.GLGraphicsItem import GLGraphicsItem
-from ..visualisation.Shader import *
-from ..visualisation.common import Textures, Objects, Surface, Buffer
+from ..render.shader import *
+from ..render.common import Textures, Objects, Surface, Buffer
+
 
 class custom_graphics_item(GLGraphicsItem):
     """
     Bases on QtCore.QGraphics item should work in every Qt OpenGL context
     """
+    ADDITATIVE = 0
+    ADDITATIVE_ALPHA = 1
+    MULTIPLICATIVE = 2
+    SEMITRANSPARENT = 3
     def __init__(self, **kwds):
         super().__init__()
         basepath = os.path.dirname(os.path.realpath(__file__)) +r"\shaders"
@@ -25,9 +30,23 @@ class custom_graphics_item(GLGraphicsItem):
             self.filename = basepath + kwds.pop("filename")
         else:
             raise Exception("Need shaders filenames")
-        self.modelview = []
-        self.projection = []
+        self.modelview = QtGui.QMatrix4x4()
+        self.projection = QtGui.QMatrix4x4()
         self._shader = shader(self.filename)
+        self._blending = (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        self._enums = [GL_DEPTH_TEST, GL_BLEND]
+        self._color =  np.array([0,0,0,0])
+        self.args = ["color", "enums", "blend_function"]
+        self.updateData = True
+        self.backgroundRender = False
+        self.BLENDING = {
+            "additative": (GL_ONE,GL_ONE),
+            "additative alpha": (GL_SRC_ALPHA,GL_ONE),
+            "multiplicative": (GL_DST_COLOR, GL_ZERO),
+            "semi transparent": (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA),
+        }
+
+
 
     def background_render(self,size, ratio, rect = (0,0,0,0)):
         self.width = int(size.x()*ratio)#int(896/322*1449)
@@ -38,35 +57,33 @@ class custom_graphics_item(GLGraphicsItem):
             rect = (rect[0]*ratio,rect[1]*ratio,self.width,self.height)
         #self.roi = rect
         self.backgroundRender = True
-        model = QtGui.QMatrix4x4()
-        X = self.position[:,0].max() #- self.position[:,0].min()
-        Y = self.position[:,1].max()# - self.position[:,1].min()
-        print(self.position[:,0].max())
-        print(self.position[:,1].max())
-        Xt = X/2 #+ self.position[:,0].min()
-        Yt = Y/2 #+ self.position[:,1].min()
+        X = self.position[:,0].max()
+        Y = self.position[:,1].max()
+        Xt = X/2#X/2
+        Yt = Y/2#Y/2-5000
+
         glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGB, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE, None)
         if glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH) == 0:
             raise Exception("OpenGL failed to create 2D texture (%dx%d); too large for this hardware." )
-            return
-        center = QtGui.QVector3D(Xt, Yt, 0)
+
         dist = math.tan(math.radians(60))*Y/2# Field of view in Y direction
+        aspect = float(self.width)/float(self.height)#aspect ratio of display
+        center = QtGui.QVector3D(Xt, Yt, 0)
         eye = QtGui.QVector3D(Xt, Yt, dist)#Point of eye in space
         up = QtGui.QVector3D(0, 1, 0)
-        model.lookAt(eye,center,up)
-        self.modelview = model
-        proj = QtGui.QMatrix4x4()
-        aspect  = float(self.width)/float(self.height)#aspect ratio of display
-        proj.perspective(60.0, aspect, dist*0.0001, dist*10000.0)
-        self.projection = proj
-        #self._m_clusterTest.set_array(np.zeros(self.position.shape[0],dtype="f"))
+
+        self.modelview = QtGui.QMatrix4x4()
+        self.modelview.lookAt(eye,center,up)
+
+        self.projection = QtGui.QMatrix4x4()
+        self.projection.perspective(60.0, aspect, dist*0.0001, dist*10000.0)
+
         renderbuffer = Buffer.Renderbuffer()
         renderbuffer.build(self.width, self.height)
         texturebuffer = Buffer.Texturebuffer()
         texturebuffer.build(self.width, self.height)
         framebuffer = Buffer.Framebuffer()
         framebuffer.build(renderbuffer.handle, texturebuffer.handle)
-
         try:
             glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.handle)
             glViewport(0, 0, self.width, self.height)
@@ -75,14 +92,28 @@ class custom_graphics_item(GLGraphicsItem):
         finally:
             glReadBuffer(GL_COLOR_ATTACHMENT0)
             buf = glReadPixels(rect[0],rect[1],rect[2], rect[3], GL_RGBA, GL_UNSIGNED_BYTE)
-            image = Image.frombytes(mode="RGBA", size=(int(rect[2]), int(rect[3])), data=buf)
-            self.image = image.transpose(Image.FLIP_LEFT_RIGHT)
+            self.image = Image.frombytes(mode="RGBA", size=(int(rect[2]), int(rect[3])), data=buf)
+            #self.image = image.transpose(Image.FLIP_LEFT_RIGHT)
+
             glBindFramebuffer(GL_FRAMEBUFFER, 0)
             renderbuffer.delete()
             texturebuffer.delete()
             framebuffer.delete()
             self.backgroundRender = False
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    def set_data(self, **kwds):
+        """
+        Set data for rendering
+        :param kwds: allowed arguments are: position, size, color, maxEmission and cluster
+        """
+        for k in kwds.keys():
+            if k not in self.args:
+                raise Exception('Invalid keyword argument: %s (allowed arguments are %s)' % (k, str(self.args)))
+        for arg in self.args:
+            if arg in kwds:
+                setattr(self, arg, kwds[arg])
+        self.updateData = True
 
     def paint(self):
         """
@@ -99,7 +130,26 @@ class custom_graphics_item(GLGraphicsItem):
             self.projection = self.view().projectionMatrix()
         self._shader.__setitem__("u_modelview", self.modelview)
         self._shader.__setitem__("u_projection", self.projection)
+
         self.setupGLState()
+
+        if GL_BLEND in self._enums:
+            glBlendFunc(self._blending[0],self._blending[1])
+
+    @property
+    def blend_function(self):
+        return self._blending
+
+    @blend_function.setter
+    def blend_function(self, value):
+        if value in self.BLENDING:
+            self._blending = self.BLENDING[value]
+        else:
+            raise ValueError('Invalid blend function: (allowed arguments are %s)' % str(self.BLENDING))
+
+
+
+
 
 class triangulation_3(custom_graphics_item):
     def __init__(self, **kwds):
@@ -109,7 +159,6 @@ class triangulation_3(custom_graphics_item):
             self.filename = basepath + kwds.pop("filename")
         else:
             raise Exception("Need shaders filenames")
-        self.enums = [GL_DEPTH_TEST, GL_BLEND]
         self.position = np.array(([[0,0,0,0,0,0,0]]))
         self.simplices = np.zeros((1,3)).astype(np.int32)
         self.image = None
@@ -117,37 +166,19 @@ class triangulation_3(custom_graphics_item):
         self.updateData = True
         self.color1 = np.array([1.0,1.0,1.0,1.0])
         self.color2 = np.array([1.0,1.0,1.0,1.0])
-        self.args = ["position", "color1", "color2", "simplices"]
+        self.args.extend(["position", "color1", "color2", "simplices"])
         self._m_vertexarray_buffer = vbo.VBO(self.position[self.simplices].astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
         #self._m_simplexarray_buffer = vbo.VBO(self.simplices.astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
         self.set_data(**kwds)
 
-    def set_data(self, **kwds):
-        """
-        Set data for point cloud rendering
-        :param kwds: allowed arguments are: position, size, color, maxEmission and cluster
-        """
-        for k in kwds.keys():
-            if k not in self.args:
-                raise Exception('Invalid keyword argument: %s (allowed arguments are %s)' % (k, str(self.args)))
-        for arg in self.args:
-            if arg in kwds:
-                setattr(self, arg, kwds[arg])
-        self.updateData = True
-
     def _update(self):
-        self.updateData = False
-        #self._shader.__setitem__("size", self.size)
-        #self.alpha = (self.alpha+10)%200
-        #self._shader.__setitem__("alpha", self.alpha)
-        #self._shader.__setitem__("color", self.color)
+        self._shader.enums = self._enums
         pos = self.position[self.simplices.astype(np.int32)].astype("f")
         pos = np.reshape(pos, (pos.shape[0]*pos.shape[1],pos.shape[2]))
         self._m_vertexarray_buffer.set_array(pos , size = None )
-        #self._m_simplexarray_buffer.set_array(self.simplices.astype("f"))
+        self.updateData = False
 
-        #if type(self.position).__module__ == np.__name__:
-        #    self.ratio = self.position[:,0].max()/self.position[:,1].max()
+
 
     def paint(self):
         super().paint()
@@ -185,9 +216,6 @@ class triangulation_3(custom_graphics_item):
 
         glLineWidth(float(1.0))
         self._shader.__setitem__("color", self.color2)
-        for enum in self.enums:
-            glEnable(enum)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         with self._shader:
             # Bind buffer objects
             glEnableVertexAttribArray(1)
@@ -219,7 +247,7 @@ class alpha_complex(custom_graphics_item):
             self.filename = basepath + kwds.pop("filename")
         else:
             raise Exception("Need shaders filenames")
-        self.enums = [GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_DEPTH_TEST, GL_BLEND]
+        self._enums = [GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_DEPTH_TEST, GL_BLEND]
         self.position = np.array(([[0,0,0,0,0,0,0]]))
         self.simplices = np.zeros((1,5))
         self.size = 1.0#
@@ -234,39 +262,20 @@ class alpha_complex(custom_graphics_item):
         self._m_vertexarray_buffer = vbo.VBO(self.position[...,[0,1]].astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
         self._m_simplexarray_buffer = vbo.VBO(self.simplices.astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
         self.set_data(**kwds)
-
-    def set_data(self, **kwds):
-        """
-        Set data for point cloud rendering
-        :param kwds: allowed arguments are: position, size, color, maxEmission and cluster
-        """
-        for k in kwds.keys():
-            if k not in self.args:
-                raise Exception('Invalid keyword argument: %s (allowed arguments are %s)' % (k, str(self.args)))
-        for arg in self.args:
-            if arg in kwds:
-                setattr(self, arg, kwds[arg])
-        self.updateData = True
+        self.blend_function = "semi transparent"
 
     def _update(self):
-        self.updateData = False
-        #self._shader.__setitem__("size", self.size)
-        #self.alpha = (self.alpha+10)%200
+        self._shader.enums = self._enums
         self._shader.__setitem__("alpha", self.alpha)
-        #self._shader.__setitem__("color", self.color)
         self._m_vertexarray_buffer.set_array(self.position.astype("f") , size = None )
         self._m_simplexarray_buffer.set_array(self.simplices.astype("f"))
+        self.updateData = False
 
-        #if type(self.position).__module__ == np.__name__:
-        #    self.ratio = self.position[:,0].max()/self.position[:,1].max()
 
     def paint(self):
         super().paint()
         # Enable several enumerators
-        for enum in self.enums:
-            glEnable(enum)
         # Blending to get a smooth point cloud
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)#todo:overlapp via blend
         glLineWidth(float(1.0))
         if self.updateData:
             self._update()
@@ -289,8 +298,7 @@ class alpha_complex(custom_graphics_item):
                 self._m_vertexarray_buffer.unbind()
                 self._m_simplexarray_buffer.unbind()
                 # Disable enumerators
-                for enum in self.enums:
-                    glDisable(enum)
+
 
 class points(custom_graphics_item):
     def __init__(self, **kwds):
@@ -300,56 +308,34 @@ class points(custom_graphics_item):
             self.filename = basepath + kwds.pop("filename")
         else:
             raise Exception("Need shaders filenames")
-        self.enums = [GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_DEPTH_TEST, GL_BLEND]
+        self._enums = [GL_POINT_SPRITE, GL_PROGRAM_POINT_SIZE, GL_DEPTH_TEST, GL_BLEND]
+        self.blend_function = "semi transparent"
         self.position = np.array(([[0,0,0,0,0,0,0]]))
-        self.cluster = np.array((0.0,0.0))
+        self.cluster = np.array([0.0,0.0])
         self.size = 20.0#
-        #self.ratio = 1
-        #self.fg_color = [0.0,0.0,0.0,0.0]
-        self.color = [1.0,1.0,1.0,1.0]
         self.maxEmission = 0
         self.image = None
         self.backgroundRender=False
-        self.updateData = True
-        self.args = ["position", "size", "color", "maxEmission", "cluster"]
+        self.args.extend(["position", "cluster", "size", "maxEmission"])
         self._m_vertexarray_buffer = vbo.VBO(self.position[...,[0,1,3,4]].astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
         self._m_clusterarray_buffer = vbo.VBO(self.cluster.astype("f"), usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
         self.set_data(**kwds)
 
-    def set_data(self, **kwds):
-        """
-        Set data for point cloud rendering
-        :param kwds: allowed arguments are: position, size, color, maxEmission and cluster
-        """
-        for k in kwds.keys():
-            if k not in self.args:
-                raise Exception('Invalid keyword argument: %s (allowed arguments are %s)' % (k, str(self.args)))
-        for arg in self.args:
-            if arg in kwds:
-                setattr(self, arg, kwds[arg])
-        self.updateData = True
-
     def _update(self):
-        self.updateData = False
+        self._shader.enums = self._enums
         self._shader.__setitem__("size", self.size)
         self._shader.__setitem__("bg_color", self.color)
         self._shader.__setitem__("maxEmission", self.maxEmission)
         self._m_vertexarray_buffer.set_array(self.position[...,[0,1,3,4]].astype("f") , size = None )
         self._m_clusterarray_buffer.set_array(self.cluster.astype("f"))
-
-        #if type(self.position).__module__ == np.__name__:
-        #    self.ratio = self.position[:,0].max()/self.position[:,1].max()
+        self.updateData = False
 
     def paint(self):
         super().paint()
         # Enable several enumerators
-        for enum in self.enums:
-            glEnable(enum)
         # Blending to get a smooth point cloud
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         if self.updateData:
             self._update()
-            print("Updating dStorm data")
         with self._shader:
             # Bind buffer objects
             glEnableVertexAttribArray(1)
@@ -368,8 +354,7 @@ class points(custom_graphics_item):
                 self._m_vertexarray_buffer.unbind()
                 self._m_clusterarray_buffer.unbind()
                 # Disable enumerators
-                for enum in self.enums:
-                    glDisable(enum)
+
 
 
 class image(custom_graphics_item):
@@ -395,7 +380,7 @@ class image(custom_graphics_item):
         ==============  =======================================================================================
         """
         super().__init__(**kwds)
-        self.enums = [GL_TEXTURE_2D, GL_DEPTH_TEST, GL_BLEND]
+        self._enums = [GL_TEXTURE_2D, GL_DEPTH_TEST, GL_BLEND]
         self.active_textures = [GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3]
         self.imageTexture = [Textures.Create2DTexture() for i in range(4)]
         self.Quad = Objects.Texture()
@@ -403,37 +388,32 @@ class image(custom_graphics_item):
         self.scaled = False
         self.backgroundRender = False
         self.image = None
-        self.ch_numb = 0
+        self.ch_numb = []
         self.data = 0
-        self.color = 0
         self.flip_lr = False
         self.flip_ud = False
+        self.smooth=True
+        self.args.extend(["data", "ch_numb", "flip_lr", "flip_ud", "smooth"])
+        self.blend_function = "additative"
 
-    def set_data(self, data, color, ch_numb, flip_lr=False, flip_ud=False, smooth=True):
-        self.ch_numb = ch_numb
-        self.data = data
-        self.color = color
-        self.flip_lr = flip_lr
-        self.flip_ud = flip_ud
-        for i in ch_numb:
-            if smooth:
-                self.imageTexture[i].set_texture(data[i], GL_LINEAR)
-            else:
-                self.imageTexture[i].set_texture(data[i], GL_NEAREST)
-        self.update()
 
-    def paint(self):
-        super().paint()
-        self._shader.__setitem__("u_UD", self.flip_ud)
-        self._shader.__setitem__("u_LR", self.flip_lr)
-        # Set uniforms
+    def _update(self):
         for i in self.ch_numb:
             self._shader.__setitem__("SIM"+str(i), i)
             self._shader.__setitem__("SIMColor"+str(i), self.color[i])
+            if self.smooth:
+                self.imageTexture[i].set_texture(self.data[i], GL_LINEAR)
+            else:
+                self.imageTexture[i].set_texture(self.data[i], GL_NEAREST)
+        self._shader.__setitem__("u_UD", self.flip_ud)
+        self._shader.__setitem__("u_LR", self.flip_lr)
+        # Set uniforms
+
+    def paint(self):
+        super().paint()
+        if self.updateData:
+            self._update()
         # Set Enumerators
-        for enum in self.enums:
-            glEnable(enum)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         with self._shader:
             for i in self.ch_numb:
                 glActiveTexture(GL_TEXTURE0+i)
@@ -448,8 +428,6 @@ class image(custom_graphics_item):
                 glDrawArrays(GL_TRIANGLE_STRIP, 0, 4)
             finally:
                 # Clean up
-                for enum in self.enums:
-                    glDisable(enum)
                 glDisableVertexAttribArray(1)
                 glDisableVertexAttribArray(2)
                 self.Surface.vertex_vbo.unbind()
@@ -463,22 +441,26 @@ class raycast(custom_graphics_item):
     """
     Do some crazy shit to get a 3D interpolation of your image
     """
+    SEMITRANSPARENT = 0
+    LIGHTING = 1
     def __init__(self, smooth=False, glOptions='translucent', **kwds):
         super().__init__(**kwds)
         glEnable(GL_TEXTURE_3D)
         self.setGLOptions(glOptions)
-        self._init_structures__()
-        self._init_shader_programs__()
         self.imageTexture = [Textures.Create3DTexture() for i in range(4)]
         self.noiseTexture = Textures.CreateNoise()
         self.data = []
-        self.chNumb = []
+        self.ch_numb = []
         self.color = []
         self.scaled = False
-        self.flipLR = False
-        self.flipUD = False
+        self.flip_lr = False
+        self.flip_ud = False
         self._needUpdate = False
         self.backgroundRender = False
+        self.lighting = self.LIGHTING
+        self.args.extend(["data", "ch_numb", "flip_lr", "flip_ud", "lighting"])
+        self._init_structures__()
+        self._init_shader_programs__()
 
     def _init_structures__(self):
         self.Quad = Objects.Quad()
@@ -490,41 +472,36 @@ class raycast(custom_graphics_item):
         self._RayEndPointsProgram = shader(self.path + r"\shaders\raycast\RayEndpoints")
         self.set_raycast_shaders()
 
-    def set_raycast_shaders(self, predefined=1, path=None):
-        #if path is None:
-            #if predefined == 1:
-        self._RayCastProgram = shader(self.path + r"\shaders\raycast\Semitransparent")
-            #if predefined == 2:
-                #self._RayCastProgram = Shader(self.path + r"\shader\Lighting")
-        #else:
-            #if path is not None:
-                #self._RayCastProgram = Shader(path)
+    def set_raycast_shaders(self,):
+        if self.lighting == 0:
+            self._RayCastProgram = shader(self.path + r"\shaders\raycast\Semitransparent")
+        if self.lighting == 1:
+            self._RayCastProgram = shader(self.path + r"\shaders\raycast\Lighting")
 
-    def set_data(self, data, color, ch_numb, flip_lr=False, flip_ud=False):
 
-        self.color = color
-        self.chNumb = ch_numb
-        self.flipLR = flip_lr
-        self.flipUD = flip_ud
-
-        if not flip_ud:
+    def _update(self):
+        self.set_raycast_shaders()
+        data = self.data
+        if not self.flip_ud:
             y = []
             for i in data:
                 y.append([np.flipud(stack) for stack in i])
             data = np.asarray(y)
-        if flip_lr:
+        if self.flip_lr:
             y = []
             for i in data:
                 y.append([np.fliplr(stack) for stack in i])
             data = np.asarray(y)
-        self.data = data[:,:,0:glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE),0:glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE)]
+        data = data[:,:,0:glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE),0:glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE)]
 #        self.noiseTexture.set_texture(data[1].shape[1], data[1].shape[2])
-        for i in ch_numb:
-            self.imageTexture[i].set_texture(self.data[i])
+        for i in self.ch_numb:
+            self.imageTexture[i].set_texture(data[i])
         self._needUpdate = True
 
     def paint(self):
         self.RayEndPointsSurface.build_surface(self.view().width(), self.view().height(), 3, 2)
+        if self.updateData:
+            self._update()
         #Find screen-space AABB for scissoring:
         #const float M = std::numeric_limits<float>::max()
         #M = 1
@@ -610,10 +587,11 @@ class raycast(custom_graphics_item):
         self._RayCastProgram.__setitem__("u_RayStop", 1)
         #self._RayEndPointsProgram.__setitem__("u_LR", self.flipLR)
         #self._RayEndPointsProgram.__setitem__("u_UD", self.flipUD)
-        for i in self.chNumb:
-            self._RayCastProgram.__setitem__("u_Color" + str(i), self.color[i])
+        for i in self.ch_numb:
+            if self.lighting == self.SEMITRANSPARENT:
+                self._RayCastProgram.__setitem__("u_Color" + str(i), self.color[i])
             self._RayCastProgram.__setitem__("u_Volume" + str(i),i+2)
-        if self._RayCastProgram.filename == "Lighting":
+        if self.lighting == self.LIGHTING:
             self._RayCastProgram.__setitem__("u_Noise", 3)
             self._RayCastProgram.__setitem__("LightPosition", [0.25, 0.25, 1.0])
             self._RayCastProgram.__setitem__("DiffuseMaterial",[1.0, 1.0, 0.5])
@@ -627,7 +605,7 @@ class raycast(custom_graphics_item):
         glBindTexture(GL_TEXTURE_2D, self.RayEndPointsSurface.surface.TextureHandle[1])
 
     def _load_textures(self):
-        for numb in self.chNumb:
+        for numb in self.ch_numb:
             #if self.imageTexture[numb].dataSet:
                 glActiveTexture(GL_TEXTURE2+numb)
                 glBindTexture(GL_TEXTURE_3D, self.imageTexture[numb].textureHandle)
@@ -712,6 +690,183 @@ class raycast(custom_graphics_item):
                         glBindBuffer(GL_ARRAY_BUFFER, 0)
                         glDisable(GL_BLEND)
                         # glDeleteBuffers(1, self._m_VertexarrayBuffer)
+
+class volume_rendering(custom_graphics_item):
+    MAX_SLICES = 512
+    EPSILON = 0.0001
+    def __init__(self, **kwds):
+        super().__init__(**kwds)
+        self.data = np.zeros((2,2,2))
+        self.args.extend(["data"])
+        self.cube = Objects.UnitCube()
+        self.texture = Textures.CreateVolumeTexture()
+        self.v_slices = np.ones((self.MAX_SLICES*12,3))
+
+        self.vertex_array = glGenVertexArrays(1)
+        self.buffer_array = glGenBuffers(1)
+        self._shader.set_uniform("volume",0)
+
+        glBindVertexArray(self.vertex_array)
+        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_array)
+
+        glBufferData(GL_ARRAY_BUFFER, self.v_slices.nbytes, self.v_slices, GL_DYNAMIC_DRAW)
+        glEnableVertexAttribArray(0)
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, None)
+        print(glGetError())
+
+        glBindVertexArray(0)
+        self.calc()
+
+        #self._m_vertexarray_buffer = vbo.VBO(self.cube.vertices[self.cube.edges], usage='GL_STATIC_DRAW', target='GL_ARRAY_BUFFER')
+        #self._m_texturearray_buffer = vbo.VBO(self.v_slices, usage='GL_DYNAMIC_DRAW', target='GL_ARRAY_BUFFER')
+
+    def _update(self):
+        self.texture.set_texture(self.data[0,:,0:1000,0:1000])
+
+
+    def calc(self):
+        tmp = self.modelview.column(3)
+        viewDir = np.array([tmp.x(),tmp.y(),tmp.z()])
+        #print(viewDir)
+        max_dist = np.dot(viewDir, self.cube.vertices[0])
+        min_dist = max_dist
+        max_index = 0
+        for i in range(8):
+            dist = np.dot(viewDir, self.cube.vertices[i])
+            if dist>max_dist:
+                max_dist = dist
+                max_index = i
+            if dist<min_dist:
+                min_dist = dist
+
+
+        min_dist -= self.EPSILON
+        max_dist += self.EPSILON
+
+        num_slices = self.data.shape[0]
+
+        vecStart = np.zeros((12,3))
+        vecDir = np.zeros((12,3))
+        lam = np.zeros(12)
+        lam_inc = np.zeros(12)
+        plane_dist = min_dist
+        plane_dist_inc = (max_dist-min_dist)/num_slices
+
+        for i in range(12):
+            vecStart[i] = self.cube.vertices[self.cube.edges[self.cube.edge_list[max_index][i]][0]]
+            vecDir[i] = self.cube.vertices[self.cube.edges[self.cube.edge_list[max_index][i]][1]]-vecStart[i]
+
+            denom = np.dot(vecDir[i], viewDir)
+
+            if (1.0 +  denom) != 1.0:
+                lam_inc[i] = plane_dist_inc/denom
+                lam[i] =  plane_dist-np.dot(vecStart[i],viewDir)/denom
+            else:
+                lam[i] = -1.0
+                lam_inc[i] = 0.0
+
+        intersection = np.zeros((6,3))
+        dL = np.zeros(12)
+
+        for h in range(num_slices):
+            i = num_slices-h-1
+
+            for j in range(12):
+                dL[j] = lam[j] + i*lam_inc[j]
+
+
+            if ((dL[0] >= 0.0) and (dL[0] < 1.0)):
+                intersection[0] = vecStart[0] + dL[0] * vecDir[0]
+
+            elif ((dL[1] >= 0.0) and (dL[1] < 1.0)):
+                intersection[0] = vecStart[1] + dL[1] * vecDir[1]
+
+            elif ((dL[3] >= 0.0) and (dL[3] < 1.0)):
+                intersection[0] = vecStart[3] + dL[3] * vecDir[3]
+
+            else: continue
+
+            if ((dL[2] >= 0.0) and (dL[2] < 1.0)):
+                intersection[1] = vecStart[2] + dL[2] * vecDir[2]
+
+            elif ((dL[0] >= 0.0) and (dL[0] < 1.0)):
+                intersection[1] = vecStart[0] + dL[0] * vecDir[0]
+
+            elif ((dL[1] >= 0.0) and (dL[1] < 1.0)):
+                intersection[1] = vecStart[1] + dL[1] * vecDir[1]
+            else:
+                intersection[1] = vecStart[3] + dL[3] * vecDir[3]
+
+            if ((dL[4] >= 0.0) and (dL[4] < 1.0)):
+                intersection[2] = vecStart[4] + dL[4] * vecDir[4]
+
+            elif ((dL[5] >= 0.0) and (dL[5] < 1.0)):
+                intersection[2] = vecStart[5] + dL[5] * vecDir[5]
+            else:
+                intersection[2] = vecStart[7] + dL[7] * vecDir[7]
+
+            if ((dL[6] >= 0.0) and (dL[6] < 1.0)):
+                intersection[3] = vecStart[6] + dL[6] * vecDir[6]
+
+            elif ((dL[4] >= 0.0) and (dL[4] < 1.0)):
+                intersection[3] = vecStart[4] + dL[4] * vecDir[4]
+
+            elif ((dL[5] >= 0.0) and (dL[5] < 1.0)):
+                intersection[3] = vecStart[5] + dL[5] * vecDir[5]
+            else:
+                intersection[3] = vecStart[7] + dL[7] * vecDir[7]
+
+            if ((dL[8] >= 0.0) and (dL[8] < 1.0)):
+                intersection[4] = vecStart[8] + dL[8] * vecDir[8]
+
+            elif ((dL[9] >= 0.0) and (dL[9] < 1.0)):
+                intersection[4] = vecStart[9] + dL[9] * vecDir[9]
+            else:
+                intersection[4] = vecStart[11] + dL[11] * vecDir[11]
+
+            if ((dL[10] >= 0.0) and (dL[10] < 1.0)):
+                intersection[5] = vecStart[10] + dL[10] * vecDir[10]
+
+            elif ((dL[8] >= 0.0) and (dL[8] < 1.0)):
+                intersection[5] = vecStart[8] + dL[8] * vecDir[8]
+
+            elif ((dL[9] >= 0.0) and (dL[9] < 1.0)):
+                intersection[5] = vecStart[9] + dL[9] * vecDir[9]
+            else:
+                intersection[5] = vecStart[11] + dL[11] * vecDir[11]
+
+            indices = np.array([0,1,2, 0,2,3, 0,3,4, 0,4,5])
+
+            for j in range(12):
+                self.v_slices[h*12+j] = intersection[indices[j]]
+        glBindBuffer(GL_ARRAY_BUFFER, self.buffer_array)
+        glBufferSubData(GL_ARRAY_BUFFER, 0, self.v_slices.nbytes, self.v_slices)
+        #self._m_texturearray_buffer[:] = self.v_slices
+        #self._m_texturearray_buffer.bind()
+        #self._m_texturearray_buffer.copy_data()
+
+
+    def paint(self):
+        super().paint()
+        if self.updateData:
+            self._update()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        with self._shader:
+            #self._m_vertexarray_buffer.bind()
+
+            glBindVertexArray(self.vertex_array)
+            self.calc()
+
+            glDrawArrays(GL_TRIANGLES, 0, int(self.v_slices.nbytes/self.v_slices[0].nbytes))
+
+            try:
+                glGetError()
+            finally:
+                x=0
+                #self._m_vertexarray_buffer.unbind()
+
+                #self._m_vertexarray_buffer.unbind()
+
 
 
 class roi(custom_graphics_item):

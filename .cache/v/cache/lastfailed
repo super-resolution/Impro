@@ -1,3 +1,4 @@
 {
-  "tests/test_image_alignment.py": true
+  "tests/test_image_alignment.py::TestImageAlignment::test_alignment": true,
+  "tests/test_image_alignment.py::test_pearson": true
 }

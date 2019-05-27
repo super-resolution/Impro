@@ -147,7 +147,7 @@ def test_transformation_accuracy(offset, source_image):
     mask[0:source_image.shape[0], 0:source_image.shape[1]] = 1
     asdf = np.zeros_like(y)
     asdf[0:source_image.shape[0], 0:source_image.shape[1]] = cv2.cvtColor(source_image, cv2.COLOR_RGBA2GRAY)
-    coeff = test_pearson(y, asdf, mask, T)[0]
+    coeff = pearson_correlation(y, asdf, mask, T)[0]
 
     return T,z,coeff
 
@@ -186,7 +186,7 @@ mask = np.zeros_like(y)
 mask[0:im.shape[0], 0:im.shape[1]] = 1
 asdf = np.zeros_like(y)
 asdf[0:im.shape[0], 0:im.shape[1]] = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
-test_pearson(y, asdf ,mask , M)
+pearson_correlation(y, asdf ,mask , M)
 color_warp = np.zeros_like(pearsonRGB)
 color_warp[0:im.shape[0], 0:im.shape[1]] = cv2.cvtColor(im, cv2.COLOR_RGBA2RGB)
 dst = transform.warp(color_warp,inverse_map=M.inverse)*255

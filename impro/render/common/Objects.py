@@ -48,8 +48,8 @@ class Quad:
     def __init__(self):
         positions = np.array([
         [-1, -1],
-         [1, -1],
-        [-1,  1],
+         [-1, 1],
+        [1,  -1],
          [1,  1],
         ], dtype="f")
         self.vertex_vbo = vbo.VBO(data=positions, usage=GL_STATIC_DRAW, target=GL_ARRAY_BUFFER)
@@ -59,8 +59,8 @@ class Texture:
     def __init__(self):
         positions = np.array([
             [0, 0],
-            [1, 0],
             [0, 1],
+            [1, 0],
             [1, 1],
             ], dtype="f")
         self.vertex_vbo = vbo.VBO(data=positions, usage=GL_STATIC_DRAW, target=GL_ARRAY_BUFFER)
@@ -69,10 +69,10 @@ class Texture:
 class Surface:
     def __init__(self):
         positions = np.array([
-            [0.0, 0.0, 0.0],
-            [1.0, 0.0, 0.0],
             [0.0, 1.0, 0.0],
+            [0.0, 0.0, 0.0],
             [1.0, 1.0, 0.0],
+            [1.0, 0.0, 0.0],
             ],dtype="f")
         #indices = np.array([
         #    0, 1, 2,

@@ -17,21 +17,21 @@ const float radius = 200.0;
 void main()
 {
         float x = mod(cluster, 6.0);
-        if(cluster < 0.1){
+        if(x < 0.1){
             v_color = bg_color;
                 }
-        else if (cluster > 0.1){
+        else if (x < 1.1){
             v_color = vec4(0.0,1.0,0.0,0.5);
         }
-        //else if (x < 2.0){
-        //    v_color = vec4(1.0,1.0,1.0,1.0);
-        //    }
-        //else if (x < 4.0){
-        //    v_color = vec4(1.0,0.0,1.0,1.0);
-        //    }
-        //else{
-        //    v_color = vec4(0.0,1.0,0.0,1.0);
-        //    }
+        else if (x < 2.1){
+            v_color = vec4(1.0,1.0,1.0,1.0);
+            }
+        else if (x < 4.1){
+            v_color = vec4(1.0,0.0,1.0,1.0);
+           }
+        else{
+            v_color = vec4(0.0,1.0,0.0,1.0);
+            }
 
     gl_Position = u_projection * u_modelview * vec4(vPosition.xyz, 1.0);
     Emission = vPosition.w;

@@ -132,7 +132,8 @@ class custom_graphics_item(GLGraphicsItem):
         self._shader.__setitem__("u_projection", self.projection)
 
         self.setupGLState()
-
+        for enum in self._enums:
+            glEnable(enum)
         if GL_BLEND in self._enums:
             glBlendFunc(self._blending[0],self._blending[1])
 

@@ -1,49 +1,54 @@
 """
 
 """
-from impro.data.image import MicroscopeImage as image
-from impro.data.image import StormImage as storm
+from impro.data.image_factory import ImageFactory
 from impro.analysis import filter
 from impro.analysis.analysis_facade import *
 import os
 
-def setting_1():
-    i = image(r"D:\asdf\3D Auswertung 22092016\20160919_SIM1\20160919_SIM_0824a_lh_1_Out_Channel Alignment.czi")
-    i.parse()
-    y = i.data[:, 8]/2
-    y = np.clip(y[0], 0, 255)
-    data = storm(r"D:\asdf\3D Auswertung 22092016\20160919_SIM1\20190920_3D_sample0824a_SIM0919_SIM1.txt")
-    data.parse()
-    storm_data = filter.local_density_filter(data.stormData, 100.0, 18)
-    y = (y).astype("uint8")[1000:2400, 200:1600]
-    y = np.flipud(np.fliplr(y))
-    print(data.stormData[...,3].max())
+imageFactory = ImageFactory()
 
-    return y,storm_data
+def setting_1():
+    #Create and prepare SIM image
+    image = imageFactory.create_image_file(r"D:\asdf\3D Auswertung 22092016\20160919_SIM1\20160919_SIM_0824a_lh_1_Out_Channel Alignment.czi")
+    image_array = image.data[:, 8]/2
+    image_array = np.clip(image_array[0], 0, 255)
+    image_array = (image_array).astype("uint8")[1000:2400, 200:1600]
+    image_array = np.flipud(np.fliplr(image_array))
+    image_array = np.fliplr(image_array)
+    #Create and prepare dSTORM data
+    storm = imageFactory.create_storm_file(r"D:\asdf\3D Auswertung 22092016\20160919_SIM1\20190920_3D_sample0824a_SIM0919_SIM1.txt")
+    storm_data = filter.local_density_filter(storm.stormData, 100.0, 18)
+
+    return image_array,storm_data
 
 def setting_2():
-    i = image(r"D:\_3dSarahNeu\!!20170317\20170317_0308c_SIM9_Out_Channel Alignment.czi")
-    i.parse()
-    y = i.data[:, 1] / 8
-    y = np.clip(y[0], 0, 255)
-    y = np.flipud(np.fliplr(y))
-    y = (y).astype("uint8")[0:1400, 0:1400]
-    data = storm(r"D:\_3dSarahNeu\!!20170317\trans_20170317_0308c_SIM9_RG_300_300_Z_coordinates_2016_11_23.txt")
-    data.parse()
-    storm_data = filter.local_density_filter(data.stormData, 100.0, 2)
-    return y,storm_data
+    #Create and prepare SIM image
+    image = imageFactory.create_image_file(r"D:\_3dSarahNeu\!!20170317\20170317_0308c_SIM9_Out_Channel Alignment.czi")
+    image_array = image.data[:, 1] / 6
+    image_array = np.clip(image_array[0], 0, 255)
+    image_array = np.flipud(np.fliplr(image_array))
+    image_array = (image_array).astype("uint8")[0:1400, 0:1400]
+    image_array = np.fliplr(image_array)
+    #Create and prepare dSTORM data
+    storm = imageFactory.create_storm_file(r"D:\_3dSarahNeu\!!20170317\trans_20170317_0308c_SIM9_RG_300_300_Z_coordinates_2016_11_23.txt")
+    storm_data = filter.local_density_filter(storm.stormData, 100.0, 2)
+
+    return image_array,storm_data
 
 def setting_3():
-    i = image(r"D:\Microtuboli\Image2b_Al532_ex488_Structured Illumination.czi")
-    i.parse()
-    y = i.data[:, 3]/6
-    y = np.clip(y[0], 0, 255)
-    y = np.flipud(y)
-    y = (y).astype("uint8")[0:1400, 0:1400]
-    data = storm(r"D:\Microtuboli\20151203_sample2_Al532_Tub_1.txt")
-    data.parse()
-    storm_data = filter.local_density_filter(data.stormData, 100.0, 18)
-    return y,storm_data
+    #Create and prepare SIM image
+    image = imageFactory.create_image_file(r"D:\Microtuboli\Image2b_Al532_ex488_Structured Illumination.czi")
+    image_array = image.data[:, 3]/6
+    image_array = np.clip(image_array[0], 0, 255)
+    image_array = np.flipud(image_array)
+    image_array = (image_array).astype("uint8")[0:1400, 0:1400]
+    image_array = np.fliplr(image_array)
+    #Create and prepare dSTORM data
+    storm = imageFactory.create_storm_file(r"D:\Microtuboli\20151203_sample2_Al532_Tub_1.txt")
+    storm_data = filter.local_density_filter(storm.stormData, 100.0, 18)
+
+    return image_array,storm_data
 #i = image(r"D:\Microtuboli\Image2b_Al532_ex488_Structured Illumination.czi")
 
 #y = i.data[:,0]/2
@@ -55,7 +60,7 @@ def setting_3():
 # todo: photon filter, z filter
 # x = Filter.photon_filter(data.stormData,3000,99999)
 
-y,storm_data = setting_3()
+y,storm_data = setting_1()
 
 
 # import matplotlib.pyplot as plt
@@ -90,6 +95,17 @@ y,storm_data = setting_3()
 #find_optimal_alpha()
 
 im = create_alpha_shape(storm_data, 130)
+"""render magenta edge image"""
+# im = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
+# im = cv2.blur(im, (4, 4))
+# canny = cv2.Canny(im, 130, 200)
+# canny = np.fliplr(canny)
+# canny = cv2.cvtColor(canny, cv2.COLOR_GRAY2RGB)
+# canny[...,1] = 0
+#
+# cv2.imshow("canny", canny[1000:])
+# cv2.waitKey(0)
+"""end render"""
 
 #cv2.imwrite(r"C:\Users\biophys\Desktop\Masterarbeit\src\abb\test\storm.jpg",storm_image)
 #cv2.imshow("a",y.astype("uint8"))
@@ -143,11 +159,7 @@ def test_transformation_accuracy(offset, source_image):
                 z[int(coord[1]+i),int(coord[0]+j)]=np.array([1,0,0,1])*255
     T =transform.estimate_transform("affine", p1, p2)
 
-    mask = np.zeros_like(y)
-    mask[0:source_image.shape[0], 0:source_image.shape[1]] = 1
-    asdf = np.zeros_like(y)
-    asdf[0:source_image.shape[0], 0:source_image.shape[1]] = cv2.cvtColor(source_image, cv2.COLOR_RGBA2GRAY)
-    coeff = pearson_correlation(y, asdf, mask, T)[0]
+    coeff = pearson_correlation(y,cv2.cvtColor(source_image, cv2.COLOR_RGBA2GRAY), T)[0]
 
     return T,z,coeff
 
@@ -182,11 +194,7 @@ def evaluate():
 
 
 pearsonRGB = cv2.cvtColor(y, cv2.COLOR_GRAY2RGB)
-mask = np.zeros_like(y)
-mask[0:im.shape[0], 0:im.shape[1]] = 1
-asdf = np.zeros_like(y)
-asdf[0:im.shape[0], 0:im.shape[1]] = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
-pearson_correlation(y, asdf ,mask , M)
+pearson_correlation(y, cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY), M)
 color_warp = np.zeros_like(pearsonRGB)
 color_warp[0:im.shape[0], 0:im.shape[1]] = cv2.cvtColor(im, cv2.COLOR_RGBA2RGB)
 dst = transform.warp(color_warp,inverse_map=M.inverse)*255

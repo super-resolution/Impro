@@ -1,22 +1,16 @@
-"""
-=================================================================================
-Class to create and compile a program from vertex, fragment and geometry shaders
-=================================================================================
-
-"""
 from OpenGL.GL import *
 from OpenGL.GL import shaders
 import os.path
 import numpy as np
 from PyQt5 import QtGui
 
-#todo: add Attribute support
 
 
-class shader(object):
+class shader():
     """
+    =================================================================================
     Class to create and compile a program from vertex, fragment and geometry shaders
-    checks for common build errors
+    =================================================================================
     :param filepath: path to vertex fragment and (optional) geometry shaders. should all have the same name
     :var m_program: reference number to program
     """

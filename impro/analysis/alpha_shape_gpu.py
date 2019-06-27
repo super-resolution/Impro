@@ -24,9 +24,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 """
-=================================================================================
-Derive 2D alpha complex from scipy.spatial Delaunay
-=================================================================================
+
 
 :Author:
   `Sebastian Reinhard`
@@ -52,37 +50,48 @@ with open(dir_path+ r'/cuda_files/alpha_shape.cu', 'r') as f:
     cuda_code = f.read()
 mod = SourceModule(cuda_code)
 
-class alpha_complex():
+class AlphaComplex():
     """
+    =================================================================================
+    Derive 2D alpha complex from scipy.spatial Delaunay
+    =================================================================================
     Class to create a alpha complex structure on GPU.
-    :param struct_ptr: pointer to allocated memmory for structure
-    :param numpy.array indices: nx3 array containing point indices of the delaunay triangulation simplices
-    :param numpy.array neighbors: nx3 array containing the indices of neighboring simplices
-    :param numpy.array points: nx2 array of the points used for delaunay triangulation
+
+
+    Parameters
+    ----------
+    struct_ptr: int
+        pointer to allocated memmory for structure
+    indices: np.array
+        nx3 array containing point indices of the delaunay triangulation simplices
+    neighbors: np.array
+        nx3 array containing the indices of neighboring simplices
+    points: np.array
+        nx2 array of the points used for delaunay triangulation
     """
-    #size of pointers in struct = memmory size needed
+    # size of pointers in struct = memory size needed
     memsize = 4* np.intp(0).nbytes
-    def __init__(self, struct_ptr, indices,points, neighbors ):
-        #pointer to allocated memmory
+
+    def __init__(self, struct_ptr: int, indices: np.array, points: np.array, neighbors: np.array):
+        # pointer to allocated memmory
         self.struct_ptr = int(struct_ptr)
-        #indices per simplex
+        # indices per simplex
         self.indices = indices.astype(np.int32)
-        #empty array for k_simplices
+        # empty array for k_simplices
         self.k_simplices = np.zeros((neighbors.shape[0]*3,5)).astype(np.float32)
-        #neighboring simplices
+        # neighboring simplices
         self.neighbors = neighbors.astype(np.int32)
-        #list of triangulation points
+        # list of triangulation points
         self.points = points.astype(np.float32)
-        #self.shape = indices.shape
-        #copy arrays to device get pointers for struct
+        # copy arrays to device get pointers for struct
         self.indices_ptr = drv.to_device(self.indices)
         self.points_ptr = drv.to_device(self.points)
         self.neighbor_ptr = drv.to_device(self.neighbors)
         self.k_simplices_ptr = drv.to_device(self.k_simplices)
 
-        #create struct from pointers
+        # create struct from pointers
         drv.memcpy_htod(self.struct_ptr, np.intp(int(self.indices_ptr)))
-        #sizeof(pointer) offset per element
+        # sizeof(pointer) offset per element
         drv.memcpy_htod(self.struct_ptr+np.intp(0).nbytes, np.intp(int(self.points_ptr)))
         drv.memcpy_htod(self.struct_ptr+np.intp(0).nbytes*2, np.intp(int(self.neighbor_ptr)))
         drv.memcpy_htod(self.struct_ptr+np.intp(0).nbytes*3, np.intp(int(self.k_simplices_ptr)))
@@ -92,8 +101,11 @@ class alpha_complex():
 
     def get(self):
         """
-        :return numpy.array nx5 of d=1 simplices
-        containing: [index1, index2, dist, sigma1, sigma2] with sigma 1 < sigma 2
+        Returns
+        -------
+        numpy.array
+            nx5 of d=1 simplices
+            containing: [index1, index2, dist, sigma1, sigma2] with sigma 1 < sigma 2
         """
         self.result = drv.from_device(self.k_simplices_ptr, self.k_simplices.shape, np.float32)
         return self.result
@@ -107,8 +119,14 @@ class alpha_complex():
 
 def get_k_simplices(points):
     """
-    :param numpy.array points: nx2 array of points to use for alpha complex
-    :returns numpy.array alpha complex: mx5 array of d=1 simplices
+    Parameters
+    ----------
+    points: np.array
+        nx2 array of points to use for alpha complex
+
+    Returns
+    -------
+    alpha complex: mx5 array of d=1 simplices
     """
     t1 = time.time()
     tri = Delaunay(points)
@@ -118,13 +136,15 @@ def get_k_simplices(points):
     simplices = tri.simplices.copy()
     neighbors = tri.neighbors.copy()
 
-    alpha_complex_ptr = drv.mem_alloc(alpha_complex.memsize)
+    alpha_complex_ptr = drv.mem_alloc(AlphaComplex.memsize)
 
-    alpha_comp = alpha_complex(alpha_complex_ptr,simplices,points, neighbors)
+    alpha_comp = AlphaComplex(alpha_complex_ptr,simplices,points, neighbors)
 
     func = mod.get_function("create_simplices")
+
     func(alpha_complex_ptr, block=(500,1,1), grid=(int(simplices.shape[0]/500),1,1))
-    alpha_comp.get()#todo: merge duplicated simplices
+
+    alpha_comp.get()
     _talph = time.time()-t1
     print("created alpha complex of " + str(points.shape[0]) + " points in " + str(_talph) + " seconds")
     res = alpha_comp.merge()
@@ -137,12 +157,9 @@ if __name__ == "__main__":
     tri = Delaunay(points)
     simplices = tri.simplices.copy()
     neighbors = tri.neighbors.copy()
+    alpha_complex_ptr = drv.mem_alloc(AlphaComplex.memsize)
 
-    #points = tri.points.copy()
-
-    alpha_complex_ptr = drv.mem_alloc(alpha_complex.memsize)
-
-    alpha_comp = alpha_complex(alpha_complex_ptr, simplices, points, neighbors)
+    alpha_comp = AlphaComplex(alpha_complex_ptr, simplices, points, neighbors)
 
     func = mod.get_function("create_simplices")
     func(alpha_complex_ptr, block=(500,1,1), grid=(int(simplices.shape[0]/500),1,1))

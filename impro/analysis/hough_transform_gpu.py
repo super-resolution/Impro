@@ -68,9 +68,6 @@ class GHTImage:
     gradient: np.array
         Gradient image
 
-    Methods
-    -------
-
     """
     def __init__(self, image, blur=4, canny_lim=(130,200)):
         self._canny_lim = canny_lim
@@ -81,6 +78,9 @@ class GHTImage:
 
 
     def _create_images(self):
+        """
+        Create different image types by convolution
+        """
         self.image = cv2.resize(self.o_image, (0,0), fx=self._scale, fy=self._scale, interpolation=cv2.INTER_CUBIC)
         self.image = cv2.blur(self.image, (self._blur,self._blur))
         self.canny = cv2.Canny(self.image, self._canny_lim[0],self._canny_lim[1])
@@ -88,6 +88,10 @@ class GHTImage:
 
     @staticmethod
     def _create_gradient(image):
+        """
+        Convolve an image with Sobel Kernels in X and Y direction to create a gradient image.
+        (Gradient orientation of a box size 5x5 in rad)
+        """
         X = cv2.Sobel(image,cv2.CV_64F,1,0,ksize=5)
         Y = cv2.Sobel(image,cv2.CV_64F,0,1,ksize=5)
         gradient = np.arctan2(X,Y)
@@ -115,10 +119,6 @@ class TemplateImage(GHTImage):
     r_matrix: np.array
         Rotated r_matrix_zero
 
-    Methods
-    -------
-    rotate_r_matrix(angle)
-        Rotate r_matrix_zero by angle
     """
 
     def __init__(self, image, **kwargs):
@@ -127,6 +127,14 @@ class TemplateImage(GHTImage):
         self.r_matrix = np.array([])
 
     def _create_r_matrix(self):
+        """
+        Create R-matrix from gradient image
+
+        Returns
+        -------
+        np.array
+            R-Matrix
+        """
         origin = np.asarray((self.gradient.shape[0] / 2, self.gradient.shape[1] / 2))
         Rtable = []
         phitable = []
@@ -144,6 +152,14 @@ class TemplateImage(GHTImage):
         return self._table_to_matrix(Rtable)
 
     def rotate_r_matrix(self, angle):
+        """
+        Rotate R-Matrix by angle rad
+
+        Params
+        -------
+        angle: float
+            Angle to rotate matrix in rad
+        """
         s = np.sin(angle)
         c = np.cos(angle)
         new_table = []
@@ -162,6 +178,18 @@ class TemplateImage(GHTImage):
 
     @staticmethod
     def _table_to_matrix(table):
+        """
+        Convert table with different column lenghts to matrix. Added entries are filled with zeros
+
+        Params
+        -------
+        table: list
+            table to convert to numpy array
+        Returns
+        -------
+        np.array
+            Matrix
+        """
         maximum = 0
         for i in table:
             if len(i) > maximum:

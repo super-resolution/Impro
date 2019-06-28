@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name='impro',
-      version='0.91',
+      version='1.0',
       description='Image analysis package',
       author='Sebastian Reinhard',
       author_email='sebastian.reinhard@stud-mail.uni-wuerzburg.de',

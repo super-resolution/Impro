@@ -5,4 +5,5 @@ build/
 dist/
 test_files/
 *.ini
-
+.cache
+impro.egg-info

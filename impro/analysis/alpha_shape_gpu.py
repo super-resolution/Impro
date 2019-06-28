@@ -24,8 +24,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 """
-
-
 :Author:
   `Sebastian Reinhard`
 
@@ -52,9 +50,8 @@ mod = SourceModule(cuda_code)
 
 class AlphaComplex():
     """
-    =================================================================================
     Derive 2D alpha complex from scipy.spatial Delaunay
-    =================================================================================
+
     Class to create a alpha complex structure on GPU.
 
 
@@ -72,7 +69,7 @@ class AlphaComplex():
     # size of pointers in struct = memory size needed
     memsize = 4* np.intp(0).nbytes
 
-    def __init__(self, struct_ptr: int, indices: np.array, points: np.array, neighbors: np.array):
+    def __init__(self, struct_ptr: int, indices: np.ndarray, points: np.ndarray, neighbors: np.ndarray):
         # pointer to allocated memmory
         self.struct_ptr = int(struct_ptr)
         # indices per simplex
@@ -117,7 +114,7 @@ class AlphaComplex():
         merged = self.result[index]
         return merged
 
-def get_k_simplices(points):
+def get_k_simplices(points: np.ndarray):
     """
     Parameters
     ----------

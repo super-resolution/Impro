@@ -9,6 +9,6 @@ setup(name='impro',
       author_email='sebastian.reinhard@stud-mail.uni-wuerzburg.de',
       url='https://github.com/super-resolution',
       packages=find_packages(),
-      package_data={'impro.render': ['shaders/*','shaders/raycast/*']},
+      package_data={'impro.render': ['shaders/*','shaders/raycast/*'], 'impro.analysis': ['cuda_files/*']},
       include_package_data=True,
      )

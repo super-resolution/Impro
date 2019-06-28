@@ -1,6 +1,6 @@
 """
 =================================================================================
-Class to render multiple objects on GPU(points, image2D, image3D
+Render multiple objects on GPU(points, image2D, image3D
 =================================================================================
 """
 import numpy as np

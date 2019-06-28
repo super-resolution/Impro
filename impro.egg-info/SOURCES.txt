@@ -1,16 +1,13 @@
 setup.py
 impro/__init__.py
 impro/main.py
-impro/test_volume_rendering.py
 impro.egg-info/PKG-INFO
 impro.egg-info/SOURCES.txt
 impro.egg-info/dependency_links.txt
 impro.egg-info/top_level.txt
-impro/analysis/_AlphaShape.py
 impro/analysis/__init__.py
 impro/analysis/alpha_shape_gpu.py
 impro/analysis/analysis_facade.py
-impro/analysis/cuda.py
 impro/analysis/filter.py
 impro/analysis/hough_transform_gpu.py
 impro/data/__init__.py
@@ -26,6 +23,7 @@ impro/render/common/Objects.py
 impro/render/common/Surface.py
 impro/render/common/Textures.py
 impro/render/common/__init__.py
+impro/test_files/_AlphaShape.py
 impro/test_files/__init__.py
 impro/test_files/compare_alpha_shapes.py
 impro/test_files/test_all.py
@@ -39,4 +37,5 @@ impro/test_files/test_limits.py
 impro/test_files/test_pearson.py
 impro/test_files/test_performance.py
 impro/test_files/test_triangulation.py
+impro/test_files/test_volume_rendering.py
 impro/test_files/voronoi_test.py

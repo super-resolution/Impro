@@ -3,9 +3,7 @@ import os
 
 class ImageFactory():
     """
-    ====================================================
     Interface to File readers
-    ====================================================
     """
 
     @classmethod

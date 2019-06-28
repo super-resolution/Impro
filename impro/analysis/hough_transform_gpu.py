@@ -23,9 +23,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 """
-=================================================================================
-Class to efficiently perform General Hough Transformation on GPU
-=================================================================================
 :Author:
   `Sebastian Reinhard`
 
@@ -33,7 +30,6 @@ Class to efficiently perform General Hough Transformation on GPU
   Biophysics and Biotechnology, Julius-Maximillians-University of Würzburg
 
 :Version: 2019.06.26
-
 """
 
 import pycuda
@@ -42,7 +38,6 @@ import pycuda.driver as drv
 import numpy as np
 import cv2
 from pycuda.compiler import SourceModule
-import time
 import os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -53,9 +48,7 @@ mod = SourceModule(cuda_code)
 
 class GHTImage:
     """
-    ====================================================
     GHT specific image preprocessing
-    ====================================================
 
     Attributes
     ----------
@@ -100,9 +93,7 @@ class GHTImage:
 
 class TemplateImage(GHTImage):
     """
-    ====================================================
     Extend GHTImage by templte properties
-    ====================================================
 
     Attributes
     ----------
@@ -207,9 +198,7 @@ class TemplateImage(GHTImage):
 
 class HoughTransform:
     """
-    ====================================================
-    Perform Gradient Weighted General Hough Transform
-    ====================================================
+    Perform Gradient Weighted General Hough Transform on the Graphics Processing Unit
 
     Attributes
     ----------

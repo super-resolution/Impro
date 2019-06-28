@@ -46,9 +46,8 @@ from skimage import transform
 
 class StormReader():
     """
-    ====================================================
+    Internal Class.
     Find dSTORM columns with regular expressions
-    ====================================================
     """
     def __init__(self, input_loc_path):
         self.dataColumn = np.zeros((6))
@@ -98,14 +97,12 @@ class StormReader():
 
 class LocalisationReader():
     """
-    ====================================================
     Read RapidSTORM files
-    ====================================================
 
-    Rewritten class to read STOM/dSTORM data from a text file in a numpy array
-    Improved performance and logic
-    Can transform the localizations if a matrix is given
-    Recives metadata from file header
+    Rewritten class to read STORM/dSTORM data from a text file in a numpy array.
+    Improved performance and logic.
+    Can transform the localizations if a matrix is given.
+    Recives metadata from file header.
 
 
     Attributes
@@ -117,26 +114,31 @@ class LocalisationReader():
     size: np.array
         X,Y size of data in nanometer
 
-
-    Methods
+    Example
     -------
-    reset_data()
-        resets dSTORM data
-    parse()
-        read dSTORM data from file
-    transform(sklearn.transform)
-        Transform dSTORM data with given transformation
+    >>> file = LocalisationReader("path_to_Rapidstormfile.txt")
+    >>> file.parse()
+    >>> data = file.stormData
+    >>> data.shape
+    (100000, 6)
+
+
+
     """
-    def __init__(self, path):
+    def __init__(self, path: str):
         self.reset_data()
         self.file_path = path
         self.size = np.array([0,0])
 
     def reset_data(self):
+        """
+        Resets dSTORM data
+        """
         self.stormData = []
 
     #Read and prepare STORM data
     def parse(self):
+        """Read dSTORM data/Metadata from file"""
         self.isParsingNeeded = False
         localizations = StormReader(self.file_path)
         localizations.readfile()
@@ -161,6 +163,17 @@ class LocalisationReader():
         self.stormData = storm_reshaped
 
     def transformAffine(self, path=None, src=None, dst=None):
+        """Transform dSTORM data affine with Landmarks file
+
+        Parameters
+        ----------
+        path : str, optional
+            path to file containing source points in column 1,2 (starting by 0) and target points in column 3,4
+        src : (,2) ndarray
+            X,Y coordinates of source points
+        dst : (,2) ndarray
+            X,Y coordinates of destination points
+        """
         if path is not None:
             landmarks = pd.read_csv(path, skiprows=1,engine="c", na_filter=False, header=None, delim_whitespace=True, dtype=np.float32).as_matrix()
             dst = landmarks[:,3:5]
@@ -172,9 +185,7 @@ class LocalisationReader():
 
 class ImageReader():
     """
-    ====================================================
     Read Image file
-    ====================================================
 
     Possible formats are .czi, .lsm, .tiff, .png
 
@@ -186,17 +197,15 @@ class ImageReader():
         Image data as array
     metaData: np.array
         Meta Data of image file containing
-        computional dimension: ShapeSizeX, ShapeSizeY, ShapeSizeZ, ShapeSizeC
-        physical dimension: SizeX(Pixel Size in X direction)...
+        computional dimensions: {ShapeSizeX, ShapeSizeY, ShapeSizeZ, ShapeSizeC}
+        and physical dimensions: SizeX(Pixel Size in X direction)...
 
-    Methods
+    Example
     -------
-    reset_data()
-        resets data
-    parse()
-        read data from file
-    calibration_px(float)
-        Set pixel size manually
+    >>> file = ImageReader("path_to_file.czi")
+    >>> file.parse()
+    >>> file.data.shape
+    (4,103,2430,2430)
     """
 
     def __init__(self, path):
@@ -206,6 +215,7 @@ class ImageReader():
 
     #Reset ConfocalImage attributes.
     def reset_data(self):
+        """resets data"""
         self.data = []
         self.meta_data = {}
         self.isParsingNeeded = True
@@ -213,6 +223,7 @@ class ImageReader():
     #Read the image data and metadata und give them into a numpy array.
     #Rearrange the arrays into a consistent shape.
     def parse(self, calibration_px=1.0):
+        """Read data/Metadata from file"""
         self.isParsingNeeded = False
         self.meta_data = {}
         self.data = []
@@ -314,7 +325,8 @@ class ImageReader():
         #Set the box for manuel calibration to the actuell pixel size.
 
     #Set pixel size to manuell value.
-    def set_calibration(self, px):
+    def set_calibration(self, px: float):
+        """Set pixel size manually"""
         self.meta_data['SizeX'] = px
         self.meta_data['SizeY'] = px
         self.meta_data['SizeZ'] = px

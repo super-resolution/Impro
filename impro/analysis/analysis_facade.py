@@ -30,7 +30,6 @@
   Biophysics and Biotechnology, Julius-Maximillians-University of Würzburg
 
 :Version: 2019.06.26
-
 """
 
 
@@ -48,16 +47,15 @@ from PyQt5.QtCore import QPoint
 app = pg.mkQApp()
 
 
-def create_alpha_shape(storm_data: np.array, alpha_value: float, px_size=32.2, line_width=1.0)-> np.array:
+def create_alpha_shape(storm_data: np.ndarray, alpha_value: float, px_size=32.2, line_width=1.0)-> np.ndarray:
     """
-    ====================================================
     Facade function to render alpha shape of dSTORM data
-    ====================================================
+
     Image is rendered from (0,0) to the maximal dimension of the dSTORM data.
 
     Parameters
     ----------
-    storm_data: np.array(nx5)
+    storm_data: np.ndarray(nx5)
         Point Cloud data to be rendered
     px_size: float
         Pixel size for the rendered image in nanometer per pixel
@@ -71,6 +69,13 @@ def create_alpha_shape(storm_data: np.array, alpha_value: float, px_size=32.2, l
     -------
     image: np.array
         Rendered image
+
+    Example
+    -------
+    >>> points = np.random.randint(0,32000,(1000000, 2))
+    >>> image = create_alpha_shape(points, 130)
+    >>> image.shape
+    (994,994)
     """
     k_simplices = alpha.get_k_simplices(storm_data[...,0:2])[0]
 
@@ -95,11 +100,10 @@ def create_alpha_shape(storm_data: np.array, alpha_value: float, px_size=32.2, l
     return image
 
 
-def create_storm(storm_data: np.array, px_size=32.2, size=20, cluster=np.array([])):
+def create_storm(storm_data: np.ndarray, px_size=32.2, size=20, cluster=np.ndarray([])):
     """
-    ==================================================
     Facade function to render an image of dSTORM data.
-    ==================================================
+
     Image is rendered from (0,0) to the maximal dimension of the dSTORM data.
 
     Parameters
@@ -118,6 +122,13 @@ def create_storm(storm_data: np.array, px_size=32.2, size=20, cluster=np.array([
     -------
     image: np.array
         Rendered image
+
+    Example
+    -------
+    >>> points = np.random.randint(0,32000,(1000000, 5))
+    >>> image = create_alpha_shape(points, 130)
+    >>> image.shape
+    (994,994)
     """
     widget = gl.GLViewWidget()
     widget.show()
@@ -134,11 +145,10 @@ def create_storm(storm_data: np.array, px_size=32.2, size=20, cluster=np.array([
     return image
 
 
-def find_mapping(target: np.array, source_color: np.array, n_col=5, n_row=5, offset=0)-> np.array:
+def find_mapping(target: np.ndarray, source_color: np.ndarray, n_col=5, n_row=5, offset=0)-> np.ndarray:
     """
-    ==================================================
     Facade function to find a mapping from source_color image to gray scale target image.
-    ==================================================
+
 
     Parameters
     ----------
@@ -162,6 +172,15 @@ def find_mapping(target: np.array, source_color: np.array, n_col=5, n_row=5, off
         Target image overlayed with source image segments at the matching position
     results: list
         Results of the Weighted General Hough Transform
+
+    Example
+    -------
+    >>> import cv2
+    >>> points = np.random.randint(0,32000,(1000000, 5))
+    >>> source = create_alpha_shape(points, 130)
+    >>> points = np.random.randint(0,120000,(1000000, 5))
+    >>> target = create_alpha_shape(points, 130)
+    >>> find_mapping(cv2.cvtColor(target, cv2.COLOR_RGBA2GRAY), source)
     """
     results = []
     target = target.astype(np.uint8)
@@ -211,9 +230,7 @@ def find_mapping(target: np.array, source_color: np.array, n_col=5, n_row=5, off
 
 def error_management(result_list: list, source_points, target_points, n_row = 5):
     """
-    ==================================================
     Test the results of th weighted GHT for missmatches
-    ==================================================
 
     Parameters
     ----------
@@ -261,11 +278,9 @@ def error_management(result_list: list, source_points, target_points, n_row = 5)
     return source_points,target_points
 
 
-def pearson_correlation(target: np.array, source: np.array, map: np.array)-> float:
+def pearson_correlation(target: np.ndarray, source: np.ndarray, map: np.ndarray)-> float:
     """
-    ==================================================
     Compute pearson correlation index after alignment
-    ==================================================
 
     Parameters
     ----------
@@ -281,6 +296,17 @@ def pearson_correlation(target: np.array, source: np.array, map: np.array)-> flo
     -------
     source_points, target_points: np.array
         Filtered source and target points for affine transformation
+
+    Example
+    -------
+    >>> import skimage.transform
+    >>> source = np.ones((1000,1000))
+    >>> target = np.ones((1000,1000))
+    >>> source_points = np.array([[1.0,1.0],[500,500],[700,500])
+    >>> target_points = source_points
+    >>> M = transform.estimate_transform("affine",source_points,target_points)
+    >>> pearson_correlation(target, source, M)
+    (1.0)
     """
     mask = np.zeros_like(target)
     mask[0:source.shape[0], 0:source.shape[1]] = 1

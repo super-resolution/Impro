@@ -42,18 +42,16 @@ class Filter:
     @staticmethod
     def values_filter(value, minimum, maximum):
         """
-        ================================================================================
         Get the indices of an array values with value > minimum and value < maximum
-        ================================================================================
 
         Parameters
         ----------
         value: np.array
             Array with values to filter
         minimum: float
-            minimum value to pass
+            minimum value to pass the filter
         maximum: float
-            maximum value to pass
+            maximum value to pass the filter
 
         Returns
         -------
@@ -67,9 +65,7 @@ class Filter:
     @staticmethod
     def local_density_filter(points, r, n):
         """
-        ================================================================================
         Get the indices of all points having a minimum of n neighbors in a radius of r
-        ================================================================================
 
         Parameters
         ----------

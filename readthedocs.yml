@@ -22,6 +22,7 @@ python:
   install:
   - requirements: requirements.txt
   - method: setuptools
+      path: .
 sphinx:
   builder: html
   configuration: doc/conf.py

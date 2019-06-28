@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 import mock
 
-MOCK_MODULES = ['pycuda', 'pycuda.autoinit', 'pycuda.driver', 'pycuda.compiler', 'lxml']
+MOCK_MODULES = ['pycuda', 'pycuda.autoinit', 'pycuda.driver', 'pycuda.compiler', 'PyQt5','lxml']
 for mod_name in MOCK_MODULES:
    sys.modules[mod_name] = mock.Mock() 
 

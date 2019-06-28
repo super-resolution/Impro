@@ -10,7 +10,6 @@ Subpackages
     impro.data
     impro.libs
     impro.render
-    impro.test_files
 
 Submodules
 ----------

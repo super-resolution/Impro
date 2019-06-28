@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 import mock
 
-MOCK_MODULES = ['pycuda',]
+MOCK_MODULES = ['pycuda','lxml']
 for mod_name in MOCK_MODULES:
    sys.modules[mod_name] = mock.Mock() 
 

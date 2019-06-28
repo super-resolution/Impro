@@ -1,7 +1,7 @@
 scipy
 tifffile
-setuptools==36.6.0
-lxml==4.1.0
+setuptools
+lxml
 opencv_python
 matplotlib
 pyqtgraph

@@ -23,7 +23,26 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-"""
+"""The objective of the alpha shape algorithm is to deliver a formal meaning for the geometric notation of 'shape',
+in the context of finite point sets.
+The straciatella ice cream example gives a visual explanation of the concept:
+Consider a ball of ice cream with chocolate pieces.
+The chocolate pieces represent the distribution of points in space (ice cream).
+The alpha shape algorithm now tries to eat as much ice cream as possible without touching any chocolate pieces,
+using an arbitrary predefined spoon size, the $\alpha$-value. Choosing a very small spoon size results in all ice cream
+being eaten, a very big spoon size in no ice cream being eaten at all (Convex Hull). But a size in between creates a
+concave hull representing the shape of the distributed chocolate pieces, the desired alpha shape.
+
+References
+----------
+(1) Edelsbrunner, Herbert ; Mücke, Ernst P.: Three-dimensional Alpha
+    Shapes. In: ACM Trans. Graph. 13 (1994), Januar, Nr. 1, 43–72. http:
+    //dx.doi.org/10.1145/174462.156635. – DOI 10.1145/174462.156635.
+    – ISSN 0730–0301
+(2) Fischer, Kaspar: Introduction to Alpha Shapes. https:
+    //graphics.stanford.edu/courses/cs268-11-spring/handouts/
+    AlphaShapes/as_fisher.pdf.
+
 :Author:
   `Sebastian Reinhard`
 
@@ -32,6 +51,10 @@
 
 :Version: 2018.03.09
 
+Example
+-------
+>>>data = np.random.randint(0,32000,(1000000, 2))
+>>>k_simplices = get_k_simplices(data[...,0:2])[0]
 """
 
 import time
@@ -123,7 +146,8 @@ def get_k_simplices(points: np.ndarray):
 
     Returns
     -------
-    alpha complex: mx5 array of d=1 simplices
+    alpha complex: mx5 array of d=1 simplices containing the upper and lower limits for a simplice to be interior/
+    on boundary of the alpha shape.
     """
     t1 = time.time()
     tri = Delaunay(points)

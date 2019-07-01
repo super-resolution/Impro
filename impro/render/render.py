@@ -22,7 +22,8 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""
+"""Render multiple objects on GPU(points, image2D, image3D)
+
 :Author:
   `Sebastian Reinhard`
 
@@ -30,9 +31,7 @@
   Biophysics and Biotechnology, Julius-Maximillians-University of Würzburg
 
 :Version: 2019.06.26
-=================================================================================
-Render multiple objects on GPU(points, image2D, image3D
-=================================================================================
+
 """
 import numpy as np
 import os

@@ -22,7 +22,10 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""
+"""The General Hough Transform (GHT) maps the orientation of edge points in a template image to a predefined origin
+(typically the middle pixel of the image). Comparing this map with an image gives each point a rating of likelihood for
+being a source point of that map.
+
 :Author:
   `Sebastian Reinhard`
 
@@ -30,6 +33,19 @@
   Biophysics and Biotechnology, Julius-Maximillians-University of Würzburg
 
 :Version: 2019.06.26
+
+Example
+-------
+>>>target = cv2.imread("path_to_file")
+>>>template = cv2.imread("path_to_file")
+>>>ght_target = GHTImage(target, blur=5, canny_lim=(130,180))
+>>>H = HoughTransform()
+>>>H.target = ght_target
+>>>ght_template = TemplateImage(template)
+>>>H.template = ght_template
+>>>res = H.transform()
+
+
 """
 
 import pycuda

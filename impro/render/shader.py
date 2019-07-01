@@ -22,7 +22,8 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-"""
+"""Create and compile a program from vertex, fragment and geometry shader
+
 :Author:
   `Sebastian Reinhard`
 
@@ -42,9 +43,7 @@ from PyQt5 import QtGui
 
 class shader():
     """
-    =================================================================================
-    Class to create and compile a program from vertex, fragment and geometry shaders
-    =================================================================================
+
     :param filepath: path to vertex fragment and (optional) geometry shaders. should all have the same name
     :var m_program: reference number to program
     """

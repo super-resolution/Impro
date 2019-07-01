@@ -100,6 +100,14 @@ impro\.test\_files\.test\_triangulation module
     :undoc-members:
     :show-inheritance:
 
+impro\.test\_files\.test\_volume\_rendering module
+--------------------------------------------------
+
+.. automodule:: impro.test_files.test_volume_rendering
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 impro\.test\_files\.voronoi\_test module
 ----------------------------------------
 

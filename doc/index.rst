@@ -8,13 +8,12 @@ Welcome to impro's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-	impro.doc.analysis.rst
-	impro.doc.data.rst
-	impro.doc.render.rst
-	impro.doc.render.common.rst
-	modules.rst
+	analysis
+	data
+	render
+	render.common
+	modules
 
 Indices and tables
 ==================

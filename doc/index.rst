@@ -9,7 +9,6 @@ Welcome to impro's documentation!
 .. toctree::
    :maxdepth: 2
 
-   impro
    impro.analysis
    impro.data
    impro.render

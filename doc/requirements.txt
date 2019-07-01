@@ -3,11 +3,9 @@ tifffile
 setuptools
 opencv_python
 matplotlib
-pyqtgraph
 numba
 pandas
 numpy
 scikit_image
 PyOpenGL
 Pillow
-PyQt5

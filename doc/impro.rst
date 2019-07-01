@@ -6,11 +6,11 @@ Subpackages
 
 .. toctree::
 
-   analysis
-   data
-   libs
-   render
-   test_files
+    impro.analysis
+    impro.data
+    impro.libs
+    impro.render
+    impro.test_files
 
 Submodules
 ----------

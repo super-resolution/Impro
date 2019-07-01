@@ -10,10 +10,10 @@ Welcome to impro's documentation!
    :maxdepth: 2
 
    impro
-   analysis
-   data
-   render
-   render.common
+   impro.analysis
+   impro.data
+   impro.render
+   impro.render.common
    modules
    setup
    

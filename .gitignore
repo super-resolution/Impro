@@ -2,6 +2,7 @@ files/
 __pycache__/
 .idea/
 build/
+doc/_build
 dist/
 test_files/
 *.ini

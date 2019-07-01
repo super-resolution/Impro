@@ -9,11 +9,14 @@ Welcome to impro's documentation!
 .. toctree::
    :maxdepth: 2
 
-   analysis.rst
-   data
-   render
-   render.common
+   impro
+   impro.analysis
+   impro.data
+   impro.render
+   impro.render.common
    modules
+   setup
+   
 
 Indices and tables
 ==================

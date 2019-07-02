@@ -36,14 +36,14 @@ being a source point of that map.
 
 Example
 -------
->>>target = cv2.imread("path_to_file")
->>>template = cv2.imread("path_to_file")
->>>ght_target = GHTImage(target, blur=5, canny_lim=(130,180))
->>>H = HoughTransform()
->>>H.target = ght_target
->>>ght_template = TemplateImage(template)
->>>H.template = ght_template
->>>res = H.transform()
+>>> target = cv2.imread("path_to_file")
+>>> template = cv2.imread("path_to_file")
+>>> ght_target = GHTImage(target, blur=5, canny_lim=(130,180))
+>>> H = HoughTransform()
+>>> H.target = ght_target
+>>> ght_template = TemplateImage(template)
+>>> H.template = ght_template
+>>> res = H.transform()
 
 
 """

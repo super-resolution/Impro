@@ -5,4 +5,3 @@ Impro
    :maxdepth: 4
 
    impro
-   setup

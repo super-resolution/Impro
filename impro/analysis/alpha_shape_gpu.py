@@ -53,8 +53,9 @@ References
 
 Example
 -------
->>>data = np.random.randint(0,32000,(1000000, 2))
->>>k_simplices = get_k_simplices(data[...,0:2])[0]
+
+>>> data = np.random.randint(0,32000,(1000000, 2))
+>>> k_simplices = get_k_simplices(data[...,0:2])[0]
 
 """
 

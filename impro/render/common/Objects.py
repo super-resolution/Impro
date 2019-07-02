@@ -1,14 +1,13 @@
+"""
+A couple of mesh objects for GPU rendering.
+"""
 from OpenGL.GL import *
 from OpenGL.arrays import vbo
 import numpy as np
 
 
 class Cube:
-    """
-    ====================================================
-    Create a Cube mesh object for OpenGL
-    ====================================================
-    """
+
     def __init__(self):
         O = -1.0
         X = 1.0
@@ -28,11 +27,7 @@ class Cube:
 
 
 class UnitCube:
-    """
-    ====================================================
-    Create a Cube mesh object for OpenGL
-    ====================================================
-    """
+
     def __init__(self):
         self.vertices = np.array([[-0.5,-0.5,-0.5],
                              [0.5,-0.5,-0.5],
@@ -55,11 +50,7 @@ class UnitCube:
 
 
 class Quad:
-    """
-    ====================================================
-    Create a Quad mesh object for OpenGL
-    ====================================================
-    """
+
     def __init__(self):
         positions = np.array([
         [-1, -1],
@@ -71,11 +62,7 @@ class Quad:
 
 
 class Texture:
-    """
-    ====================================================
-    Create a Texture mapping for OpenGL
-    ====================================================
-    """
+
     def __init__(self):
         positions = np.array([
             [0, 0],
@@ -87,11 +74,7 @@ class Texture:
 
 
 class Surface:
-    """
-    ====================================================
-    Create a Surface object for OpenGL
-    ====================================================
-    """
+
     def __init__(self):
         positions = np.array([
             [0.0, 1.0, 0.0],

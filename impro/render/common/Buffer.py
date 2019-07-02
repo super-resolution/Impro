@@ -1,3 +1,8 @@
+"""
+A couple of buffer objects for GPU rendering.
+"""
+
+
 from OpenGL.GL import *
 import numpy as np
 

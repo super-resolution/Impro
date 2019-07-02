@@ -5,6 +5,51 @@
 
 Welcome to impro's documentation!
 =================================
+Impro is a package for data processing in super-resolution microscopy. It contains high perfomant
+GPU based visualization and algorithms for 2D and 3D data.
+Main features:
+
+ * Cuda accelerated 2D Alpha Shapes
+ * Automated image alignment via General Hough Transform
+ * Huge list of filters for localization datasets
+ * Customizable Opengl widget based on modelview perspective standard
+ * Pearson correlation
+
+Example
+-------
+Basic usage example. Preprocessing is adapted to the dataset provided in 
+`Super-resolution correlator <https://github.com/super-resolution/Super-resolution-correlator>`_.
+
+.. code-block:: python
+   
+   from impro.data.image_factory import ImageFactory
+   from impro.analysis.filter import Filter
+   from impro.analysis.analysis_facade import *
+   
+   # Read and preprocess SIM image
+   image = ImageFactory.create_image_file(r"path_to_file.czi")
+   
+   # Example for image preprocessing
+   image_array = image.data[:, 3] / 6
+   image_array = np.clip(image_array[0], 0, 255)
+   image_array = np.flipud(image_array)
+   image_array = (image_array).astype("uint8")[0:1400, 0:1400]
+   image_array = np.fliplr(image_array)
+   
+   # Read dSTORM data
+   storm = ImageFactory.create_storm_file(r"path_to_file.txt")
+   
+   # Preprocess dSTORM point data
+   indices = Filter.local_density_filter(storm.stormData, 100.0, 18)
+   storm_data = storm.stormData[indices]
+   # Render dSTORM data to image
+   im = create_alpha_shape(storm_data, 130)
+   col = int(im.shape[1]/200)
+   row = int(im.shape[0]/200)
+   source_points, target_points, overlay, results = find_mapping(sim, storm, n_row=row, n_col=col)
+   source_points, target_points = error_management(results, source_points, target_points, n_row=row)
+   M = transform.estimate_transform("affine",source_points,target_points)
+   correlation_index = pearson_correlation(sim, cv2.cvtColor(storm, cv2.COLOR_RGBA2GRAY), M)
 
 .. toctree::
    :maxdepth: 2
@@ -14,7 +59,7 @@ Welcome to impro's documentation!
    impro.render
    impro.render.common
    modules
-   setup
+   impro.setup
    
 
 Indices and tables

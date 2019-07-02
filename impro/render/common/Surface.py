@@ -1,3 +1,6 @@
+"""
+A couple of texture mappings for GPU rendering.
+"""
 from OpenGL.GL import *
 import numpy as np
 

@@ -6,22 +6,11 @@ Subpackages
 
 .. toctree::
 
-   analysis
-   data
-   libs
-   render
-   test_files
-
-Submodules
-----------
-
-impro\.main module
-------------------
-
-.. automodule:: impro.main
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   impro.analysis
+   impro.data
+   impro.libs
+   impro.render
+   impro.setup
 
 
 Module contents

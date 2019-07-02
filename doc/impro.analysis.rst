@@ -1,18 +1,11 @@
-impro\.analysis package
+Analysis module
 =======================
+Collection of useful analysis tools. For easy acess use the :ref:`Analysis facade`
 
 Submodules
 ----------
 
-impro\.analysis\.alpha\_shape\_gpu module
------------------------------------------
-
-.. automodule:: impro.analysis.alpha_shape_gpu
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-impro\.analysis\.analysis\_facade module
+Analysis facade
 ----------------------------------------
 
 .. automodule:: impro.analysis.analysis_facade
@@ -20,7 +13,16 @@ impro\.analysis\.analysis\_facade module
     :undoc-members:
     :show-inheritance:
 
-impro\.analysis\.filter module
+
+Alpha Shape
+-----------------------------------------
+
+.. automodule:: impro.analysis.alpha_shape_gpu
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Filter
 ------------------------------
 
 .. automodule:: impro.analysis.filter
@@ -28,7 +30,7 @@ impro\.analysis\.filter module
     :undoc-members:
     :show-inheritance:
 
-impro\.analysis\.hough\_transform\_gpu module
+Hough Transform
 ---------------------------------------------
 
 .. automodule:: impro.analysis.hough_transform_gpu

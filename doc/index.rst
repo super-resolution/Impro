@@ -5,7 +5,7 @@
 
 Welcome to impro's documentation!
 =================================
-Impro is a package for data processing in super-resolution microscopy. It contains high perfomant
+`Impro <https://github.com/super-resolution/impro>`_. is a package for data processing in super-resolution microscopy. It contains high perfomant
 GPU based visualization and algorithms for 2D and 3D data.
 Main features:
 
@@ -14,6 +14,15 @@ Main features:
  * Huge list of filters for localization datasets
  * Customizable Opengl widget based on modelview perspective standard
  * Pearson correlation
+
+References
+----------
+A detailed explantation of the algorithm and it's functionality can be found at:
+
+`Reinhard S, Aufmkolk S, Sauer M, Doose S. 
+Registration and Visualization of Correlative Super-Resolution Microscopy Data. 
+Biophys J. 2019 Jun; 116(11) 2073-2078. 
+doi:10.1016/j.bpj.2019.04.029. PMID: 31103233. <https://doi.org/10.1016/j.bpj.2019.04.029>`_
 
 Example
 -------

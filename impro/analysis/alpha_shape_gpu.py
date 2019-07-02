@@ -23,15 +23,21 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-"""The objective of the alpha shape algorithm is to deliver a formal meaning for the geometric notation of 'shape',
+r"""The objective of the alpha shape algorithm is to deliver a formal meaning for the geometric notation of 'shape',
 in the context of finite point sets.
 The straciatella ice cream example gives a visual explanation of the concept:
 Consider a ball of ice cream with chocolate pieces.
 The chocolate pieces represent the distribution of points in space (ice cream).
 The alpha shape algorithm now tries to eat as much ice cream as possible without touching any chocolate pieces,
-using an arbitrary predefined spoon size, the $\alpha$-value. Choosing a very small spoon size results in all ice cream
+using an arbitrary predefined spoon size, the :math:`\alpha`-value. Choosing a very small spoon size results in all ice cream
 being eaten, a very big spoon size in no ice cream being eaten at all (Convex Hull). But a size in between creates a
 concave hull representing the shape of the distributed chocolate pieces, the desired alpha shape.
+
+.. figure:: fig/alpha.png
+
+   Considering the red dotted line *l*, the limit *a* is defined as the minimum of the diameter of the circumcircles around
+   :math:`\triangle_U` and :math:`\triangle_V`. The limit *b* is the maximum of circumcircles around :math:`\triangle_U` and :math:`\triangle_V`.
+   Since the :math:`\alpha`-ball is smaller than *b*, but bigger than *a*, *l* is classified as boundary.
 
 References
 ----------
@@ -50,6 +56,8 @@ References
   Biophysics and Biotechnology, Julius-Maximillians-University of Würzburg
 
 :Version: 2018.03.09
+
+
 
 Example
 -------

@@ -1,5 +1,6 @@
 # Impro
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2620224.svg)](https://doi.org/10.5281/zenodo.2620224)
+[![Documentation Status](https://readthedocs.org/projects/impro/badge/?version=latest)](https://impro.readthedocs.io/en/latest/?badge=latest)
 
 Impro is a package for data processing in super-resolution microscopy. It contains high perfomant
 GPU based visualization and algorithms for 2D and 3D data. <br />

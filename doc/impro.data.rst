@@ -1,18 +1,8 @@
-impro\.data package
+Data module
 ===================
 
-Submodules
-----------
 
-impro\.data\.image module
--------------------------
-
-.. automodule:: impro.data.image
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-impro\.data\.image\_factory module
+Image Factory
 ----------------------------------
 
 .. automodule:: impro.data.image_factory
@@ -20,6 +10,13 @@ impro\.data\.image\_factory module
     :undoc-members:
     :show-inheritance:
 
+Image
+-------------------------
+
+.. automodule:: impro.data.image
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Module contents
 ---------------

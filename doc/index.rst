@@ -66,7 +66,6 @@ Basic usage example. Preprocessing is adapted to the dataset provided in
    impro.analysis
    impro.data
    impro.render
-   impro.render.common
    modules
    impro.setup
    

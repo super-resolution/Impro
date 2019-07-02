@@ -1,10 +1,7 @@
-impro\.render\.common package
+Common module
 =============================
 
-Submodules
-----------
-
-impro\.render\.common\.Buffer module
+Buffer
 ------------------------------------
 
 .. automodule:: impro.render.common.Buffer
@@ -12,7 +9,7 @@ impro\.render\.common\.Buffer module
     :undoc-members:
     :show-inheritance:
 
-impro\.render\.common\.Objects module
+Objects
 -------------------------------------
 
 .. automodule:: impro.render.common.Objects
@@ -20,7 +17,7 @@ impro\.render\.common\.Objects module
     :undoc-members:
     :show-inheritance:
 
-impro\.render\.common\.Surface module
+Surface
 -------------------------------------
 
 .. automodule:: impro.render.common.Surface
@@ -28,7 +25,7 @@ impro\.render\.common\.Surface module
     :undoc-members:
     :show-inheritance:
 
-impro\.render\.common\.Textures module
+Textures
 --------------------------------------
 
 .. automodule:: impro.render.common.Textures

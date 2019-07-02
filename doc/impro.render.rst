@@ -1,17 +1,14 @@
-impro\.render package
+Render module
 =====================
 
-Subpackages
+Common module
 -----------
 
 .. toctree::
 
     impro.render.common
 
-Submodules
-----------
-
-impro\.render\.render module
+Render
 ----------------------------
 
 .. automodule:: impro.render.render
@@ -19,7 +16,7 @@ impro\.render\.render module
     :undoc-members:
     :show-inheritance:
 
-impro\.render\.shader module
+Shader
 ----------------------------
 
 .. automodule:: impro.render.shader

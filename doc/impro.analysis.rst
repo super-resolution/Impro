@@ -2,9 +2,6 @@ Analysis module
 =======================
 Collection of useful analysis tools. For easy acess use the :ref:`Analysis facade`
 
-Submodules
-----------
-
 Analysis facade
 ----------------------------------------
 
